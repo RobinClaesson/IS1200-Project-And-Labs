@@ -12,8 +12,12 @@
 #define COLUMNS 6
 
 void print_number(int n) {
-  int i = 0;
+  static int calls = 0;
+  if (calls  ==  COLUMNS)
+    printf("\n");
   printf("%u\t", n);
+
+  calls++;
 }
 
 void print_primes(int n){
