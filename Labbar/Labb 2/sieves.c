@@ -24,6 +24,7 @@ void print_sieves(const int n)
       numbers[i] = i + 2;
     }
 
+    //select first prime
     int selected = 0;
     while(selected != -1)
     {

@@ -21,6 +21,7 @@ void print_sieves(const int n)
     int arrayLength = n-2;
     int* numbers = (int*)malloc(sizeof(int) * arrayLength);
 
+    //Fills Array from 2 to n
     for(int i = 0; i <= arrayLength; i++){
       numbers[i] = i + 2;
     }
