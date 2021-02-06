@@ -5,8 +5,18 @@
 
 char* text1 = "This is a string.";
 char* text2 = "Yet another thing.";
+char **list1 = &text1;
+
+void work (){
 
 
+
+}
+
+void copycodes (){
+  while(*text1 != 0 ){
+  }
+}
 
 void printlist(const int* lst){
   printf("ASCII codes and corresponding characters.\n");
@@ -18,9 +28,9 @@ void printlist(const int* lst){
 }
 
 void endian_proof(const char* c){
-  printf("\nEndian experiment: 0x%02x,0x%02x,0x%02x,0x%02x\n", 
+  printf("\nEndian experiment: 0x%02x,0x%02x,0x%02x,0x%02x\n",
          (int)*c,(int)*(c+1), (int)*(c+2), (int)*(c+3));
-  
+
 }
 
 int main(void){
