@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 int is_prime(int n){
-
   /*
   Loops through every number snaller than n from 2 and up
   If there is no remainder after deviding with i then n is not a prime 
