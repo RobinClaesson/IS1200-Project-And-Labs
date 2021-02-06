@@ -9,7 +9,17 @@
 #include <stdio.h>
 
 int is_prime(int n){
-  return 0;
+
+  /*
+  Loops through every number snaller than n from 2 and up
+  If there is no remainder after deviding with i then n is not a prime 
+  If no number that has no remainder then n is a prime 
+  */
+  for(int i = 2; i < n; i++)
+    if(n % i == 0)
+      return 0;
+
+  return 1;
 }
 
 int main(void){
