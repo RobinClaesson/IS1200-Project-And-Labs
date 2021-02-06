@@ -11,6 +11,10 @@
 
 #define COLUMNS 6
 
+void print_number(int n) {
+  int i = 0;
+  printf("%u\t", n);
+}
 
 void print_primes(int n){
   // Should print out all prime numbers less than 'n'
@@ -35,11 +39,16 @@ void print_primes(int n){
 // 'argv' is an array of char pointers, where each
 // char pointer points to a null-terminated string.
 int main(int argc, char *argv[]){
+  print_number(1);
+  print_number(3);
+  print_number(4);
+  print_number(4);
+  print_number(4);
+  print_number(4);
+  print_number(4);
   if(argc == 2)
     print_primes(atoi(argv[1]));
   else
     printf("Please state an interger number.\n");
   return 0;
 }
-
- 
