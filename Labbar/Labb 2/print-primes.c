@@ -13,11 +13,28 @@
 
 void print_number(int n) {
   static int calls = 0;
-  if (calls  ==  COLUMNS)
+  if (calls  ==  COLUMNS){
     printf("\n");
+    calls = 0;
+  }
+
   printf("%u\t", n);
 
   calls++;
+}
+
+int is_prime(int n){
+
+  /*
+  Loops through every number snaller than n from 2 and up
+  If there is no remainder after deviding with i then n is not a prime
+  If no number that has no remainder then n is a prime
+  */
+  for(int i = 2; i < n; i++)
+    if(n % i == 0)
+      return 0;
+
+  return 1;
 }
 
 void print_primes(int n){
@@ -25,31 +42,16 @@ void print_primes(int n){
   // with the following formatting. Note that
   // the number of columns is stated in the define
   // COLUMNS
-
-  printf("%10d ", 2);
-  printf("%10d ", 3);
-  printf("%10d ", 5);
-  printf("%10d ", 7);
-  printf("%10d ", 11);
-  printf("%10d ", 13);
-  printf("\n");
-  printf("%10d ", 17);
-  printf("%10d ", 19);
-
-  printf("\n");
+    for (int i = 2; i <= n; i++){
+      if (is_prime(i))
+        print_number(i);
+  }
 }
 
 // 'argc' contains the number of program arguments, and
 // 'argv' is an array of char pointers, where each
 // char pointer points to a null-terminated string.
 int main(int argc, char *argv[]){
-  print_number(1);
-  print_number(3);
-  print_number(4);
-  print_number(4);
-  print_number(4);
-  print_number(4);
-  print_number(4);
   if(argc == 2)
     print_primes(atoi(argv[1]));
   else
