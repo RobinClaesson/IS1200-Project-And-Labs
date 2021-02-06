@@ -17,8 +17,9 @@ void print_number(int n) {
 
 void print_sieves(const int n)
 {
+    //Allocate array
     int arrayLength = n-2;
-    int numbers[arrayLength];
+    int* numbers = (int*)malloc(sizeof(int) * arrayLength);
 
     for(int i = 0; i <= arrayLength; i++){
       numbers[i] = i + 2;
@@ -46,6 +47,8 @@ void print_sieves(const int n)
       }
     }
 
+    //Dealocate array
+    free(numbers);
 }
 
 
