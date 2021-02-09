@@ -44,6 +44,7 @@ struct Rectangle player1;
 struct Rectangle player2;
 
 int main() {
+  screenSize = createPoint(128, 32); //128x32 screen size
   resetGame();
 
   update();
@@ -56,10 +57,13 @@ void update()
   ball.pos.y += sin(ballAngle);
 
 
-  if(collisionRR(player1, ball) || collisionRR(player2, ball))
+  if(collisionRR(player1, ball) || collisionRR(player2, ball)){
+
     ballAngle += acos(-1);
-  //ball.pos.x += -1;
-  //ball.pos.y += -1;
+
+    if(ballAngle >= 2*acos(-1))
+      ballAngle -= 2*acos(-1);
+  }
 
   //draw
   clearScreen();
@@ -90,15 +94,14 @@ void update()
 }
 
 void resetGame(){
-
-  screenSize = createPoint(128, 32); //128x32 screen size
-
-  player1 = createRect(1, screenSize.y/2 - 3, 1, 6);
-  player2 = createRect(screenSize.x - 2., screenSize.y/2 - 3, 1, 6);
+  player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
+  player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 
 
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
   ballAngle = acos(-1);
+
+
 
 }
 
@@ -127,19 +130,19 @@ int collisionRP(struct Rectangle rect, struct Point point){
 
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
     //If rect1 is to the right of rect2
-    if(rect1.pos.x > rect2.pos.x + rect2.size.x)
+    if(rect1.pos.x >= rect2.pos.x + rect2.size.x)
       return 0;
 
     //if rect1 is to the left of rect2
-    else if(rect2.pos.x > rect1.pos.x + rect1.size.x)
+    else if(rect2.pos.x >= rect1.pos.x + rect1.size.x)
       return 0;
 
     //if rect1 is above rect2
-    else if(rect1.pos.y + rect1.size.y < rect2.pos.y)
+    else if(rect1.pos.y + rect1.size.y <= rect2.pos.y)
       return 0;
 
     //if rect 1 is below rect2
-    else if(rect1.pos.y >  rect2.pos.y + rect2.size.y)
+    else if(rect1.pos.y >=  rect2.pos.y + rect2.size.y)
       return 0;
 
     return 1;
