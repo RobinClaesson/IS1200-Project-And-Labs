@@ -1,3 +1,6 @@
+//2s about 900 000
+//10s about 4 700 000
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,6 +8,7 @@
 
 void print_number(int n) {
   static int calls = 0;
+
   if (calls  ==  COLUMNS){
     printf("\n");
     calls = 0;

@@ -5,6 +5,9 @@
  This file is in the public domain.
 */
 
+//2s about 80 000
+//10s abut 230 000
+
 
 #include <stdio.h>
 #include <stdlib.h>
