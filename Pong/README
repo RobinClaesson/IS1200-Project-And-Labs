@@ -1,6 +1,6 @@
-#PONG
+# PONG
 
-##Kontroller
+## Kontroller
 Skriv in ett tecken för kommando (och updatera):
 
 w -> Vänstra spelaren upp
@@ -14,7 +14,7 @@ e -> avsluta
 
 annat/tomt -> inget(bara uppdatera)
 
-##Byggt på 
+## Byggt på 
 This is an empty project template.
 Just add your own code to the existing C or assembly files.
 Any added C or assembly files will automatically be built,
