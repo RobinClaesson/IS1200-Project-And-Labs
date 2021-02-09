@@ -130,19 +130,19 @@ int collisionRP(struct Rectangle rect, struct Point point){
 
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
     //If rect1 is to the right of rect2
-    if(rect1.pos.x >= rect2.pos.x + rect2.size.x)
+    if(rect1.pos.x > rect2.pos.x + rect2.size.x)
       return 0;
 
     //if rect1 is to the left of rect2
-    else if(rect2.pos.x >= rect1.pos.x + rect1.size.x)
+    else if(rect2.pos.x > rect1.pos.x + rect1.size.x)
       return 0;
 
     //if rect1 is above rect2
-    else if(rect1.pos.y + rect1.size.y <= rect2.pos.y)
+    else if(rect1.pos.y + rect1.size.y < rect2.pos.y)
       return 0;
 
     //if rect 1 is below rect2
-    else if(rect1.pos.y >=  rect2.pos.y + rect2.size.y)
+    else if(rect1.pos.y >  rect2.pos.y + rect2.size.y)
       return 0;
 
     return 1;
