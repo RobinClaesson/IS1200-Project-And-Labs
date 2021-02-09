@@ -16,6 +16,7 @@
 
 void print_number(int n) {
   static int calls = 0;
+
   if (calls  ==  COLUMNS){
     printf("\n");
     calls = 0;
@@ -47,7 +48,7 @@ void print_primes(int n){
   // COLUMNS
     for (int i = 2; i <= n; i++){
       if (is_prime(i))
-        print_number(i);
+          print_number(i);
   }
 }
 

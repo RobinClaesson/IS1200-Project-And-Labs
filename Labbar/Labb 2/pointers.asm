@@ -37,31 +37,27 @@ work:
 	la	$a1,list1
 	la	$a2,count
 	jal	copycodes
-	
+
 	la 	$a0,text2
 	la	$a1,list2
 	la	$a2,count
 	jal	copycodes
 	POP	($ra)
-	
-	
+
+
 # function copycodes()
 copycodes:
 loop:
-	lb	$t0,0($a0)	
+	lb	$t0,0($a0)
 	beq	$t0,$0,done
 	sw	$t0,0($a1)
 
 	addi	$a0,$a0,1
 	addi	$a1,$a1,4
-	
+
 	lw	$t1,0($a2)
 	addi	$t1,$t1,1
 	sw	$t1,0($a2)
 	j	loop
 done:
 	jr	$ra
-		
-
-
-

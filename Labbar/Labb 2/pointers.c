@@ -29,7 +29,6 @@ void work()
 {
     copycodes(text1, list1, &count);
     copycodes(text2, list2, &count);
-
 }
 
 
