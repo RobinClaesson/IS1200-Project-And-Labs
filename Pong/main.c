@@ -29,7 +29,10 @@ void printGame();
 void printGameStatus();
 
 int collisionRP(struct Rectangle rect, struct Point point);
-int collisionRR(struct Rectangle rect1, struct Point rect2);
+int collisionRR(struct Rectangle rect1, struct Rectangle rect2);
+
+void moveUp(struct Rectangle* rect);
+void moveDown(struct Rectangle* rect);
 
 //Global Variables
 struct Point screenSize;
@@ -41,7 +44,6 @@ struct Rectangle player1;
 struct Rectangle player2;
 
 int main() {
-  srand(time(NULL));   // Initialization, should only be called once.
   resetGame();
 
   update();
@@ -53,6 +55,9 @@ void update()
   ball.pos.x += cos(ballAngle);
   ball.pos.y += sin(ballAngle);
 
+
+  if(collisionRR(player1, ball) || collisionRR(player2, ball))
+    ballAngle += acos(-1);
   //ball.pos.x += -1;
   //ball.pos.y += -1;
 
@@ -61,12 +66,27 @@ void update()
   printGame();
   printGameStatus();
 
-  //loop
+
   char c = getchar();
   if(c =='r')
     resetGame();
-    
-  update();
+
+  else if(c == 'w')
+    moveUp(&player1);
+
+  else if(c == 's')
+    moveDown(&player1);
+
+  else if(c == 'u')
+    moveUp(&player2);
+
+  else if(c == 'j')
+    moveDown(&player2);
+
+
+  //loop
+  if(c != 'e')
+    update();
 }
 
 void resetGame(){
@@ -78,7 +98,7 @@ void resetGame(){
 
 
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  ballAngle = (double)(rand() % 628) / 100;
+  ballAngle = acos(-1);
 
 }
 
@@ -105,13 +125,40 @@ int collisionRP(struct Rectangle rect, struct Point point){
   else return 0;
 }
 
-int collisionRR(struct Rectangle rect1, struct Point rect2)
+int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
+    //If rect1 is to the right of rect2
+    if(rect1.pos.x > rect2.pos.x + rect2.size.x)
+      return 0;
+
+    //if rect1 is to the left of rect2
+    else if(rect2.pos.x > rect1.pos.x + rect1.size.x)
+      return 0;
+
+    //if rect1 is above rect2
+    else if(rect1.pos.y + rect1.size.y < rect2.pos.y)
+      return 0;
+
+    //if rect 1 is below rect2
+    else if(rect1.pos.y >  rect2.pos.y + rect2.size.y)
+      return 0;
+
+    return 1;
+}
+
+void moveUp(struct Rectangle* rect)
 {
-  return 0;
+  if(rect->pos.y > 0)
+    rect->pos.y--;
+}
+
+void moveDown(struct Rectangle* rect)
+{
+  if(rect->pos.y + rect->size.y < screenSize.y)
+    rect->pos.y++;
 }
 
 
-
+//Print to terminal functions (To be removed in final product)
 void printPoint(struct Point point)
 {
   printf("x=%.2f | y=%.2f", point.x, point.y);
