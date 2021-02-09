@@ -4,12 +4,15 @@
 Skriv in ett tecken för kommando (och updatera):
 
 w -> Vänstra spelaren upp
+
 s -> Vänstra spelaren ner
 
 u -> Vänstra spelaren upp
+
 s -> Vänstra spelaren ner
 
 r -> reset
+
 e -> avsluta
 
 annat/tomt -> inget(bara uppdatera)
