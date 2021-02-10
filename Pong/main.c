@@ -206,7 +206,7 @@ void printGameStatus()
    printf("Player 1: ");
    printRect(player1);
 
-   printf("\nPlayer2: ");
+   printf("\nPlayer 2: ");
    printRect(player2);
 
    printf("\nBall: ");
