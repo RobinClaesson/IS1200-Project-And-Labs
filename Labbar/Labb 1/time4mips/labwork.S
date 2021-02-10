@@ -51,7 +51,7 @@ delay:
 
 	addi $a0, $a0, -1
 	li $t0, 0
-	li $t1, 1300
+	li $t1, 6500
 delayloop: 
 	
 	addi $t0, $t0, 1
