@@ -62,6 +62,7 @@ void update()
   ball.pos.y += sin(ballAngle);
 
 
+  //Ball paddle collision
   if(collisionRR(player1, ball) || collisionRR(player2, ball)){
 
     ballAngle += acos(-1);
@@ -70,9 +71,21 @@ void update()
       ballAngle -= 2*acos(-1);
   }
 
+  //Ball top/bot collisionRP
+  if(ball.pos.y <= 0 || rectBot(ball) >= screenSize.y)
+  {
+    ballAngle += acos(-1);
+
+    if(ballAngle >= 2*acos(-1))
+      ballAngle -= 2*acos(-1);
+  }
+
+
   draw();
 
-  char c = getchar();
+  char c;
+  scanf("%c", &c);
+
   if(c =='r')
     resetGame();
 
@@ -87,7 +100,6 @@ void update()
 
   else if(c == 'j')
     moveDown(&player2);
-
 
   //loop
   if(c != 'e')
@@ -109,9 +121,9 @@ void resetGame(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 
-
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  ballAngle = acos(-1);
+  //ballAngle = acos(-1);
+  ballAngle = 1;
 
 }
 
@@ -148,11 +160,11 @@ int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
       return 0;
 
     //if rect1 is above rect2
-    else if(rect1.pos.y + rect1.size.y < rect2.pos.y)
+    else if(rectBot(rect1) < rect2.pos.y)
       return 0;
 
     //if rect 1 is below rect2
-    else if(rect1.pos.y >  rect2.pos.y + rect2.size.y)
+    else if(rect1.pos.y >  rectBot(rect2))
       return 0;
 
     return 1;
@@ -170,15 +182,21 @@ void moveDown(struct Rectangle* rect)
     rect->pos.y++;
 }
 
+//Returns the y coardnate for the bottom of the rectangle
 int rectBot(struct Rectangle rect)
 {
   return rect.pos.y + rect.size.y;
 }
 
+//Recturns the x coardinate for the right of the rectangle
 int rectRight(struct Rectangle rect)
 {
   return rect.pos.x + rect.size.x;
 }
+
+
+
+
 
 //Print to terminal functions (To be removed in final product)
 void printPoint(struct Point point)
