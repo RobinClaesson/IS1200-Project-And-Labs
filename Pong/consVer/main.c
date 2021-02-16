@@ -28,15 +28,16 @@ void printRect(struct Rectangle rect);
 void printPoint(struct Point point);
 void printGame();
 void printGameStatus();
-void drawPoint(struct Point point);
-vid drawRectagle(struct Rectangle rect);
 
+int rectBot(struct Rectangle rect);
+int rectRight(struct Rectangle rect);
 
 int collisionRP(struct Rectangle rect, struct Point point);
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2);
 
 void moveUp(struct Rectangle* rect);
 void moveDown(struct Rectangle* rect);
+
 
 //Global Variables
 struct Point screenSize;
@@ -69,10 +70,39 @@ void update()
       ballAngle -= 2*acos(-1);
   }
 
-  //draw
   draw();
 
+  char c = getchar();
+  if(c =='r')
+    resetGame();
+
+  else if(c == 'w')
+    moveUp(&player1);
+
+  else if(c == 's')
+    moveDown(&player1);
+
+  else if(c == 'u')
+    moveUp(&player2);
+
+  else if(c == 'j')
+    moveDown(&player2);
+
+
+  //loop
+  if(c != 'e')
+    update();
 }
+
+
+void draw()
+{
+  //draw
+  clearScreen();
+  printGame();
+  printGameStatus();
+}
+
 
 void resetGame(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
@@ -139,17 +169,61 @@ void moveDown(struct Rectangle* rect)
     rect->pos.y++;
 }
 
-void draw()
+int rectBot(struct Rectangle rect)
 {
-  //Add drawing logic here
+  return rect.pos.y + rect.size.y;
 }
 
-void drawPoint(struct Point point)
-{
 
+//Print to terminal functions (To be removed in final product)
+void printPoint(struct Point point)
+{
+  printf("x=%.2f | y=%.2f", point.x, point.y);
 }
 
-vid drawRectagle(struct Rectangle rect)
+void printRect(struct Rectangle rect)
+{
+  printf("x=%.2f | y=%.2f | w=%.2f | h=%.2f", rect.pos.x, rect.pos.y, rect.size.x, rect.size.y);
+}
+
+void printGame()
 {
 
+  struct Point pos;
+
+  for(int y = -1; y <= screenSize.y; y++)
+  {
+    for(int x = -1; x <= screenSize.x; x++)
+    {
+        pos.x = x;
+        pos.y = y;
+
+        if(x == -1 || x == screenSize.x)
+          printf("|");
+
+        else if(y == -1 || y == screenSize.y)
+          printf("-");
+
+        else if(collisionRP(ball, pos) || collisionRP(player1, pos) || collisionRP(player2, pos))
+          printf("#");
+
+        else
+          printf(" ");
+    }
+
+    printf("\n");
+  }
+}
+
+void printGameStatus()
+{
+   printf("Player 1: ");
+   printRect(player1);
+
+   printf("\nPlayer 2: ");
+   printRect(player2);
+
+   printf("\nBall: ");
+   printRect(ball);
+   printf("\nBallangle: %.3f\n", ballAngle);
 }
