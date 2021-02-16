@@ -55,6 +55,7 @@ int main() {
 	return 0;
 }
 
+//Game Update function
 void update()
 {
   ball.pos.x += cos(ballAngle);
@@ -74,6 +75,13 @@ void update()
 
 }
 
+//Main draw function
+void draw()
+{
+  //Add drawing logic here
+}
+
+//Resets game to startstate
 void resetGame(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
@@ -84,6 +92,7 @@ void resetGame(){
 
 }
 
+//Returns a point at the (x,y) coardinate
 struct Point createPoint(int x, int y){
   struct Point p;
   p.x = x;
@@ -91,6 +100,7 @@ struct Point createPoint(int x, int y){
   return p;
 }
 
+//Returns a rectangle at (x,y) coardinate with size (width, height)
 struct Rectangle createRect(int x, int y, int width, int height){
   struct Rectangle rect;
   rect.pos = createPoint(x, y);
@@ -99,6 +109,7 @@ struct Rectangle createRect(int x, int y, int width, int height){
   return rect;
 }
 
+//Returns true if point is inside rect
 int collisionRP(struct Rectangle rect, struct Point point){
   if(point.x >= rect.pos.x && point.x < rect.pos.x + rect.size.x &&
      point.y >= rect.pos.y && point.y < rect.pos.y + rect.size.y)
@@ -107,6 +118,7 @@ int collisionRP(struct Rectangle rect, struct Point point){
   else return 0;
 }
 
+//Returns true if rect1 and rect2 is overlapping anyhwere
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
     //If rect1 is to the right of rect2
     if(rect1.pos.x > rect2.pos.x + rect2.size.x)
@@ -127,28 +139,26 @@ int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
     return 1;
 }
 
+//Moves the rectanle up 1 pixel
 void moveUp(struct Rectangle* rect)
 {
   if(rect->pos.y > 0)
     rect->pos.y--;
 }
-
+//Moves the rectanle down 1 pixel
 void moveDown(struct Rectangle* rect)
 {
   if(rect->pos.y + rect->size.y < screenSize.y)
     rect->pos.y++;
 }
 
-void draw()
-{
-  //Add drawing logic here
-}
-
+//Turns the pixel on at coardinate (x,y)
 void drawPoint(struct Point point)
 {
 
 }
 
+//Turns all the pixels on inside the rectangle
 vid drawRectagle(struct Rectangle rect)
 {
 

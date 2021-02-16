@@ -139,11 +139,11 @@ int collisionRP(struct Rectangle rect, struct Point point){
 
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
     //If rect1 is to the right of rect2
-    if(rect1.pos.x > rect2.pos.x + rect2.size.x)
+    if(rect1.pos.x > rectRight(rect2))
       return 0;
 
     //if rect1 is to the left of rect2
-    else if(rect2.pos.x > rect1.pos.x + rect1.size.x)
+    else if(rect2.pos.x > rectRight(rect1))
       return 0;
 
     //if rect1 is above rect2
@@ -174,6 +174,10 @@ int rectBot(struct Rectangle rect)
   return rect.pos.y + rect.size.y;
 }
 
+int rectRight(struct Rectangle rect)
+{
+  return rect.pos.x + rect.size.x;
+}
 
 //Print to terminal functions (To be removed in final product)
 void printPoint(struct Point point)
