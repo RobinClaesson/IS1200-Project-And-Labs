@@ -23,6 +23,7 @@
 .global delay
 .global time2string
 .global hexasc
+.global enable_interrupt
 
 .text
 hexasc: 
@@ -122,4 +123,8 @@ timeColon:
 	
 	j timeloop
 	nop
+	
+enable_interrupt:
+	ei
+	jr $ra
 	

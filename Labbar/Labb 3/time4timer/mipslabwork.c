@@ -18,6 +18,7 @@ int mytime = 0x5957;
 volatile int* portE = (volatile int *) 0xbf886110;
 int timecount = 0;
 
+
 char textstring[] = "text, more text, and even more text!";
 
 /* Interrupt Service Routine */

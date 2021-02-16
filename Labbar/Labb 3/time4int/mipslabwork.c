@@ -14,6 +14,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
 
+int prime = 1234567;
 int mytime = 0x5957;
 volatile int* portE = (volatile int *) 0xbf886110;
 int timecount = 0;
@@ -21,9 +22,21 @@ int timecount = 0;
 char textstring[] = "text, more text, and even more text!";
 
 /* Interrupt Service Routine */
-void user_isr( void )
-{
-  return;
+void user_isr( void ) {
+
+  timecount++;
+  if (timecount == 10){
+    timecount = 0;
+    time2string( textstring, mytime );
+    display_string( 3, textstring );
+    display_update();
+    tick( &mytime );
+  }
+
+  // Clear Timer 2 flag
+  //if (IFS(0) & 0x100){
+  IFS(0) &= 0xfffffeff;
+  //}
 }
 
 /* Lab-specific initialization goes here */
@@ -53,59 +66,17 @@ void labinit( void )
   // set period register to 31250
   PR2 = 31250;
 
+  IEC(0) = (1 << 8);
+  IPC(2) = 4;
+
+  enable_interrupt();
+
   return;
 }
 
 /* This function is called repetitively from the main program */
-void labwork( void )
-{
-  int buttons = getbtns();
-
-  if (buttons){
-
-    int switches = getsw();
-    // button 1
-    if (buttons & 0x1){
-      mytime &= 0xfff0;
-      mytime |= switches;
-    }
-
-    // button 2
-    if (buttons & 0x2){
-      mytime &= 0xff0f;
-      mytime |= switches << 4;
-    }
-
-    // button 3
-    if (buttons & 0x4){
-      mytime &= 0xf0ff;
-      mytime |= switches << 8;
-    }
-
-    //button 4
-    if (buttons & 0x8){
-      mytime &= 0x0fff;
-      mytime |= switches << 12;
-    }
-  }
-  if (IFS(0) & 0x100){
-    IFS(0) &= 0xfffffeff;
-    timecount++;
-    if (timecount == 10){
-      timecount = 0;
-
-      time2string( textstring, mytime );
-      //sprintf(textstring, "Updates = %d", updates);
-      display_string( 3, textstring );
-      display_update();
-      tick( &mytime );
-      display_image(96, icon);
-
-      //
-      if((*portE & 0xff) == 0xff)
-        *portE &= 0xfffff00;
-      else
-        (*portE)++;
-    }
-  }
+void labwork( void ) {
+  prime = nextprime( prime );
+  display_string( 0, itoaconv( prime ) );
+  display_update();
 }
