@@ -5,6 +5,8 @@
 
 #define clearScreen() printf("\033[H\033[J")
 
+#define PI (acos(-1))
+
 //structures
 struct Point{
   double x;
@@ -31,6 +33,7 @@ void printGameStatus();
 
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
+struct Point rectCenter(struct Rectangle rect);
 
 int collisionRP(struct Rectangle rect, struct Point point);
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2);
@@ -38,6 +41,8 @@ int collisionRR(struct Rectangle rect1, struct Rectangle rect2);
 void moveUp(struct Rectangle* rect);
 void moveDown(struct Rectangle* rect);
 
+void setBallAngle(double angle);
+void ballPaddleAngle(struct Rectangle rect);
 
 //Global Variables
 struct Point screenSize;
@@ -47,6 +52,8 @@ double ballAngle = 0;
 
 struct Rectangle player1;
 struct Rectangle player2;
+
+double debug = 0;
 
 int main() {
   screenSize = createPoint(128, 32); //128x32 screen size
@@ -62,23 +69,35 @@ void update()
   ball.pos.y += sin(ballAngle);
 
 
-  //Ball paddle collision
-  if(collisionRR(player1, ball) || collisionRR(player2, ball)){
-
-    ballAngle += acos(-1);
-
-    if(ballAngle >= 2*acos(-1))
-      ballAngle -= 2*acos(-1);
+  //Ball player1 collision
+  if(collisionRR(player1, ball)){
+      ballPaddleAngle(player1);
+      ball.pos.x  = rectRight(player1);
   }
 
-  //Ball top/bot collisionRP
-  if(ball.pos.y <= 0 || rectBot(ball) >= screenSize.y)
+  //Ball player2 collision
+  else if(collisionRR(player2, ball)){
+      ballPaddleAngle(player2);
+      ball.pos.x = player2.pos.x - ball.size.x;
+  }
+
+  //Ball bot/top collisionRP
+  if(rectBot(ball) >= screenSize.y)
   {
-    ballAngle += acos(-1);
-
-    if(ballAngle >= 2*acos(-1))
-      ballAngle -= 2*acos(-1);
+    setBallAngle(-ballAngle);
+    ball.pos.y = screenSize.y - ball.size.y;
   }
+
+  else if(ball.pos.y <= 0)
+  {
+    setBallAngle(-ballAngle);
+    ball.pos.y = 0;
+  }
+
+
+  //Someone scores
+  if(ball.pos.x < 0 || rectRight(ball) > screenSize.x)
+    resetGame();
 
 
   draw();
@@ -101,6 +120,19 @@ void update()
   else if(c == 'j')
     moveDown(&player2);
 
+  else if(c =='a')
+  {
+    printf("Enter new angle:");
+    float f;
+    scanf("%f", &f);
+
+    //ballAngle = (double)f;
+    setBallAngle((double)f);
+  }
+
+  else if(c == 'd')
+    setBallAngle(ballAngle + PI);
+
   //loop
   if(c != 'e')
 
@@ -122,8 +154,7 @@ void resetGame(){
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  //ballAngle = acos(-1);
-  ballAngle = 1;
+  ballAngle = PI;
 
 }
 
@@ -194,8 +225,39 @@ int rectRight(struct Rectangle rect)
   return rect.pos.x + rect.size.x;
 }
 
+//Returns the center of the rect
+struct Point rectCenter(struct Rectangle rect)
+{
+    struct Point center;
+    center.x = (rect.pos.x + rectRight(rect))/2;
+    center.y = (rect.pos.y + rectBot(rect))/2;
+    return center;
+}
 
 
+void setBallAngle(double angle)
+{
+    ballAngle = angle;
+
+    if(ballAngle > 2*PI)
+      ballAngle -= 2*PI;
+    else if(ballAngle < 0)
+      ballAngle += 2*PI;
+}
+
+void ballPaddleAngle(struct Rectangle player)
+{
+  setBallAngle(PI - ballAngle);
+
+  double dist = rectCenter(player).y - rectCenter(ball).y;
+  double offset = (PI/3)*(dist/player.size.y); //Max offset * percentage distance from middle
+
+  //The offset have different sign for the two players
+  if(ball.pos.x > player.pos.x)
+    offset *= -1;
+
+  setBallAngle(ballAngle + offset);
+}
 
 
 //Print to terminal functions (To be removed in final product)
@@ -227,7 +289,10 @@ void printGame()
         else if(y == -1 || y == screenSize.y)
           printf("-");
 
-        else if(collisionRP(ball, pos) || collisionRP(player1, pos) || collisionRP(player2, pos))
+        else if(collisionRP(ball, pos))
+          printf("O");
+
+        else if(collisionRP(player1, pos) || collisionRP(player2, pos))
           printf("#");
 
         else
@@ -249,4 +314,6 @@ void printGameStatus()
    printf("\nBall: ");
    printRect(ball);
    printf("\nBallangle: %.3f\n", ballAngle);
+
+   printf("\nDebug: %.2f\n", debug);
 }
