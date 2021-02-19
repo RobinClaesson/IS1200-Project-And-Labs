@@ -1,4 +1,4 @@
-//#include <pic32mx.h>
+#include <pic32mx.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -155,7 +155,7 @@ void moveDown(struct Rectangle* rect)
 //Turns the pixel on at coardinate (x,y)
 void drawPoint(struct Point point)
 {
-
+  
 }
 
 //Turns all the pixels on inside the rectangle

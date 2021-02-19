@@ -11,6 +11,6 @@ int getsw (){
 }
 
 int getbtns(){
-  // return the value of 4 of the on-board buttons
+  // return the value of 3 of the on-board buttons
   return ((PORTD &= 0xe0) >> 4) | ((PORTF &= 0x2) >> 1);
 }

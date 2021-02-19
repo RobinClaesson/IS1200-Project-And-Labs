@@ -45,14 +45,15 @@ void labinit( void )
   // timer 2 clear
   T2CON = 0x0;
 
-  // set as ON
-  T2CONSET = 1 << 15;
-
   // set the prescale to 256
   T2CONSET = 0x7 << 4;
 
   // set period register to 31250
   PR2 = 31250;
+
+  // set as ON
+  T2CONSET = 1 << 15;
+
 
   return;
 }
@@ -90,8 +91,10 @@ void labwork( void )
     }
   }
   if (IFS(0) & 0x100){
+    
     IFS(0) &= 0xfffffeff;
     timecount++;
+
     if (timecount == 10){
       timecount = 0;
 

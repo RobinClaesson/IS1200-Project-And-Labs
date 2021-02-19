@@ -33,9 +33,9 @@ void labinit( void )
 
   //set leds as outputs and to 0 (bit 7-0)
   *trisE &= 0xfffff00;
-  *portE &= 0xfffff09;
+  *portE &= 0xfffff00;
 
-  //set bit 11-5 as input
+  //set bit 11-5 as input (buttons 2-4 and the switches)
   TRISDSET =  0xfe0;
 
   //set button 1 as input
