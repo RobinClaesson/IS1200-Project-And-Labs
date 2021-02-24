@@ -1,6 +1,6 @@
 .text
 
-	addi $a0, $0, 8		#a0 = n
+	addi $a0, $0, 1		#a0 = n
 	addi $a1, $0, 0		#a1 outer loop counter
 	addi $v0, $0, 1		#return value to 1
 
