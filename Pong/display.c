@@ -242,8 +242,10 @@ void display_string(int line, char *s) {
 			textbuffer[line][i] = ' ';
 }
 
-void display_pixel (){
+void display_pixel (int x, int y){
+    int byteindex = y%8;
 
+    framebuffer[y/8][x] |= (1 << byteindex);
 }
 
 void clear_buffer(){

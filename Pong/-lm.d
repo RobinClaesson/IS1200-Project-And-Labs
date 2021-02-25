@@ -1,0 +1,1 @@
+-lm: stubs.c
