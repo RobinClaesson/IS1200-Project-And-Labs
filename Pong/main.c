@@ -24,10 +24,6 @@ void resetGame();
 void update();
 void draw();
 
-void printRect(struct Rectangle rect);
-void printPoint(struct Point point);
-void printGame();
-void printGameStatus();
 void drawPoint(struct Point point);
 vid drawRectagle(struct Rectangle rect);
 
@@ -155,7 +151,7 @@ void moveDown(struct Rectangle* rect)
 //Turns the pixel on at coardinate (x,y)
 void drawPoint(struct Point point)
 {
-  
+
 }
 
 //Turns all the pixels on inside the rectangle
