@@ -45,9 +45,18 @@ int main() {
   for (i = 0; i < 128; i++){
     display_pixel(i, 0);
   }
-  double x = cos(32);
-  
+
   display_update();
+
+void display_rectangle(struct Rectangle rect){
+  int i, j;
+
+  for (i = 0; i <= rect.size.x; i++){
+    for (j = 0; j <= rect.size.y; j++){
+      display_pixel(rect.pos.x + i, rect.pos.y + j);
+    }
+  }
+}
 
   /*
   screenSize = createPoint(128, 32); //128x32 screen size
