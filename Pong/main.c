@@ -331,6 +331,28 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(ballAngle + offset);
 }
 
+void update_player1(){
+
+  if (btn4_down){
+    moveUp(player1());
+  }
+
+  if (btn3_down){
+    moveDown(player_1());
+  }
+}
+
+void update_player2(){
+
+  if (btn2_down()){
+    moveUp(player2());
+  }
+
+  if (btn1_down()) {
+    moveDown(player2);
+  }
+}
+
 void input_init(){
   //set buttons 2-4 and the switches as inputs
   TRISDSET =  0xfe0;
