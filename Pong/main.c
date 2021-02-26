@@ -85,7 +85,7 @@ int main(void) {
   display_init();
   game_init();
   timer_init();
-  
+
   while(1);
 
   return 0;
@@ -133,7 +133,7 @@ void timer_init(){
 //Update functions
 //-----------------------------------------------
 void user_isr(){
-/*
+
   if (IFS(0) & 0x100){
     //reset interrupt flag
     IFS(0) &= 0xfffffeff;
@@ -166,7 +166,7 @@ void user_isr(){
 
     draw();
   }
-*/
+
 }
 
 void update_ball(){
