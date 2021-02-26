@@ -94,6 +94,7 @@ void resetGame(){
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
   gameState = VsHuman;
+  menuState = VsHuman;
 
   display_pixel(0,0);
   display_pixel(127,0);
@@ -177,7 +178,12 @@ void update_ball(){
 
 void update_menu(){
 
-  
+  if(btn3_pressed())
+    menu_up();
+  else if(btn2_pressed())
+    menu_down();
+  else if(btn1_pressed())
+    gameState = menuState;
 
 }
 

@@ -81,3 +81,47 @@ int btn4_pressed()//Single Press
 {
     return (btn_state & 0x8) && (~old_btn_state & 0x8);
 }
+
+//-----------------------------------------------
+// Get switch input
+//-----------------------------------------------
+
+//Switch 1
+int swt1_on() //Is on
+{
+    return swt_state & 0x1;
+}
+int swt1_toggl()//Toggled on
+{
+    return (swt_state & 0x1) && (~old_swt_state & 0x1);
+}
+
+//Switch 2
+int swt2_on() //Is on
+{
+    return swt_state & 0x1;
+}
+int swt2_toggl()//Toggled on
+{
+    return (swt_state & 0x2) && (~old_swt_state & 0x2);
+}
+
+//Switch 3
+int swt3_on() //Is on
+{
+    return swt_state & 0x1;
+}
+int swt3_toggl()//Toggled on
+{
+    return (swt_state & 0x4) && (~old_swt_state & 0x4);
+}
+
+//Switch 4
+int swt4_on() //Is on
+{
+    return swt_state & 0x1;
+}
+int swt4_toggl()//Toggled on
+{
+    return (swt_state & 0x4) && (~old_swt_state & 0x4);
+}
