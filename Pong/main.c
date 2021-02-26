@@ -337,7 +337,31 @@ void display_rectangle(struct Rectangle rect){
 //Displays the menu on the screen
 void display_menu()
 {
+  char* toPrint = "";
 
+  //PvP
+  if(menuState == 0)
+    toPrint = "Play vs Human <--";
+  else
+      toPrint = "Play vs Human";
+
+  display_string(0, toPrint);
+
+  //PvE
+  if(menuState == 1)
+    toPrint = "Play vs AI <--";
+  else
+      toPrint = "Play vs AI";
+
+  display_string(0, toPrint);
+
+  //Highscore
+  if(menuState == 2)
+    toPrint = "Highscores <--";
+  else
+      toPrint = "Highscores";
+
+  display_string(0, toPrint);
 }
 
 
