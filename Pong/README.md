@@ -26,7 +26,9 @@ d -> Bekräfta menyval
 
 annat/tomt -> bara uppdatera
 
-## Byggt på 
+## Byggt ovanpå
+https://github.com/is1200-example-projects/project-template
+
 This is an empty project template.
 Just add your own code to the existing C or assembly files.
 Any added C or assembly files will automatically be built,
