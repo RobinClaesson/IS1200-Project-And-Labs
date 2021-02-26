@@ -94,7 +94,7 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   game_init();
   timer_init();
   led_init();
-  
+
   while(1);
 
   return 0;
