@@ -24,6 +24,9 @@ void update();
 void draw();
 
 void display_rectangle(struct Rectangle rect);
+void input_init();
+int get_switches();
+int get_buttons();
 
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
@@ -57,6 +60,12 @@ int main() {
 
   draw();
 
+  display_pixel(0,0);
+  display_pixel(127,0);
+  display_pixel(0,31);
+  display_pixel(127,31);
+  //draw();
+  display_update();
   //update();
 	return 0;
 }
@@ -66,7 +75,7 @@ void display_rectangle(struct Rectangle rect){
 
   for (i = 0; i < rect.size.x; i++){
     for (j = 0; j < rect.size.y; j++){
-      display_pixel(rect.pos.x + i, rect.pos.y + j);
+      display_pixel((int)rect.pos.x + i, (int)rect.pos.y + j);
     }
   }
 }
@@ -234,11 +243,27 @@ void ballPaddleAngle(struct Rectangle player)
   setBallAngle(ballAngle + offset);
 }
 
+void input_init(){
+  //set buttons 2-4 and the switches as inputs
+  TRISDSET =  0xfe0;
 
+  //set button 1 as input
+  TRISFSET = 0x2;
+}
 
+void timer_init(){
+  
+}
 
+// returns value of the 4  on-board switches
+int get_switches(){
+  return (PORTD &= 0xf00) >> 8;
+}
 
-
+// returns the value of 4 of the on-board buttons
+int get_buttons(){
+  return ((PORTD &= 0xe0) >> 4) | ((PORTF &= 0x2) >> 1);
+}
 
 
 
