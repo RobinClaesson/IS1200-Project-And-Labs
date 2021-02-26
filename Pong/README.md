@@ -1,21 +1,30 @@
 # PONG
 
-## Kontroller
+## Kontroller för Chipkit
 Skriv in ett tecken för kommando (och updatera):
 
-w -> Vänstra spelaren upp
+btn4 -> Vänstra spelaren upp / Meny upp
 
-s -> Vänstra spelaren ner
+btn3 -> Vänstra spelaren ner / Meny Ner
+
+btn2 -> Vänstra spelaren upp
+
+btn1 -> Vänstra spelaren ner / Bekräfta menyval
+
+## Kontroller för ConsVer
+Skriv in ett tecken för kommando (och updatera):
+
+w -> Vänstra spelaren upp / Meny upp
+
+s -> Vänstra spelaren ner / Meny Ner
 
 u -> Vänstra spelaren upp
 
-s -> Vänstra spelaren ner
+j -> Vänstra spelaren ner
 
-r -> reset
+d -> Bekräfta menyval
 
-e -> avsluta
-
-annat/tomt -> inget(bara uppdatera)
+annat/tomt -> bara uppdatera
 
 ## Byggt på 
 This is an empty project template.
