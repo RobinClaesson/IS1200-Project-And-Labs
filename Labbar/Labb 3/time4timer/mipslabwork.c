@@ -91,7 +91,7 @@ void labwork( void )
     }
   }
   if (IFS(0) & 0x100){
-    
+
     IFS(0) &= 0xfffffeff;
     timecount++;
 

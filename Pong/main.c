@@ -34,6 +34,9 @@ void update_highscore();
 
 void draw();
 void display_rectangle(struct Rectangle rect);
+void input_init();
+int get_switches();
+int get_buttons();
 
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
@@ -67,7 +70,7 @@ enum GameState{VsHuman, VsAI, HighScore, Menu}gameState, menuState;
 int main() {
   display_init();
   game_init();
-  
+
   draw();
 
   //update();
@@ -86,7 +89,14 @@ void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
   gameState = VsHuman;
 
-  resetGame();
+  display_pixel(0,0);
+  display_pixel(127,0);
+  display_pixel(0,31);
+  display_pixel(127,31);
+  //draw();
+  display_update();
+  //update();
+	return 0;
 }
 
 
@@ -95,7 +105,7 @@ void game_init(){
 //-----------------------------------------------
 void update(){
   switch(gameState){
-    
+
     case VsHuman:
     update_ball();
     break;
@@ -170,7 +180,7 @@ void update_highscore(){
 void draw(){
   clear_buffer();
 
-  switch(gameState){  
+  switch(gameState){
     case VsHuman:
     case VsAI:
 
@@ -321,7 +331,36 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(ballAngle + offset);
 }
 
-//Taylorapproximaiton for cos
+void input_init(){
+  //set buttons 2-4 and the switches as inputs
+  TRISDSET =  0xfe0;
+
+  //set button 1 as input
+  TRISFSET = 0x2;
+}
+
+void timer_init(){
+
+}
+
+// returns value of the 4  on-board switches
+int get_switches(){
+  return (PORTD &= 0xf00) >> 8;
+}
+
+// returns the value of 4 of the on-board buttons
+int get_buttons(){
+  return ((PORTD &= 0xe0) >> 4) | ((PORTF &= 0x2) >> 1);
+}
+
+
+
+
+
+
+
+
+
 double cos (double x){
   return 1 - (x*x)/2;
 }
