@@ -23,45 +23,58 @@ struct Rectangle{
 //-----------------------------------------------
 //Predefining functions
 //-----------------------------------------------
+//Structure functions
 struct Point createPoint(int x, int y);
 struct Rectangle createRect(int x, int y, int width, int height);
-
-void resetGame();
-void resetPlayers();
-void game_init();
-
-void update();
-void update_ball();
-void update_menu();
-void update_chooseDiff();
-void update_highscore();
-void update_player1();
-void update_player2();
-void update_AI();
-void player_score(int* player_score);
-void resetBall();
-void display_menu();
-
-void draw();
-void display_rectangle(struct Rectangle rect);
-void timer_init();
-
-void menu_up();
-void menu_down();
-
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
 struct Point rectCenter(struct Rectangle rect);
 
+//Collision
 int collisionRP(struct Rectangle rect, struct Point point);
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2);
 
-void moveUp(struct Rectangle* rect);
-void moveDown(struct Rectangle* rect);
+//Resets
+void resetGame();
+void resetBall();
+void resetPlayers();
 
+//Inits
+void game_init();
+void timer_init();
+
+//Update
+void update();
+
+//Ball updates
+void update_ball();
 void setBallAngle(double angle);
 void ballPaddleAngle(struct Rectangle rect);
 
+//Player updates
+void update_player1();
+void update_player2();
+void update_AI();
+
+void moveUp(struct Rectangle* rect);
+void moveDown(struct Rectangle* rect);
+void player_score(int* player_score);
+
+//Graphics
+void draw();
+void display_rectangle(struct Rectangle rect);
+void display_menu();
+
+//Menu
+void update_menu();
+void menu_up();
+void menu_down();
+
+void update_highscore();
+void update_chooseDiff();
+
+
+//Console printing
 void printGame();
 void printGameStatus();
 void update_input();
