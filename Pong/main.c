@@ -274,7 +274,7 @@ void draw(){
     break;
   }
 
-  display_update();
+  display_update(gameState);
 }
 
 //Draw a filled rectangle
