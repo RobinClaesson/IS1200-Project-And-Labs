@@ -86,7 +86,7 @@ double debug = 0;
 //-----------------------------------------------
 int main() {
   game_init();
-  
+
   draw();
 
   update();
@@ -104,7 +104,7 @@ void resetGame(){
 void game_init()
 {
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = VsHuman;
+  gameState = VsAI;
 
   resetGame();
 }
@@ -114,13 +114,21 @@ void game_init()
 //Update functions
 //-----------------------------------------------
 void update(){
-  switch(gameState){    
+  switch(gameState){
     case VsHuman:
     update_ball();
     break;
 
     case VsAI:
     update_ball();
+
+    double diff = rectCenter(player2).y - rectCenter(ball).y;
+
+    if(diff > player2.size.y/2)
+      moveUp(&player2);
+    else if(diff < -player2.size.y/2)
+      moveDown(&player2);
+
     break;
 
     case HighScore:
@@ -134,7 +142,7 @@ void update(){
   }
 
   draw();
-  
+
   getControlChar();
   update();
 }
@@ -193,7 +201,7 @@ void draw(){
 
   clearScreen();
 
-  switch(gameState){  
+  switch(gameState){
     case VsHuman:
     case VsAI:
     printGame();
@@ -397,7 +405,7 @@ void getControlChar()
   char c;
   scanf("%c", &c);
 
-  switch(gameState){  
+  switch(gameState){
     case VsHuman:
     case VsAI:
     if(c == 'w')

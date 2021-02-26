@@ -67,9 +67,8 @@ struct Rectangle player2;
 
 enum GameState{VsHuman, VsAI, HighScore, Menu}gameState, menuState;
 char* menuText[3] = {"PvP", "PvE", "HighScores"};
-char* menuSelect = "<-";
 
-
+int score_p1, score_p2;
 //-----------------------------------------------
 //Main / Init / Resets
 //-----------------------------------------------
@@ -87,6 +86,8 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   while(OSCCON & (1 << 21));  /* Wait until PBDIV ready */
   SYSKEY = 0x0;  /* Lock OSCCON */
 
+  PORTESET = 0xff;
+
   display_init();
   game_init();
   timer_init();
@@ -100,6 +101,13 @@ void resetGame(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 
+  resetBall();
+
+  score_p1 = 0;
+  score_p2 = 0;
+}
+
+void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
   ballAngle = PI;
 }
@@ -146,7 +154,6 @@ void update(){
     update_input();
 
 
-
     switch(gameState){
 
       case VsHuman:
@@ -158,6 +165,8 @@ void update(){
 
       case VsAI:
       update_ball();
+      update_player1();
+      update_AI();
       break;
 
       case HighScore:
@@ -176,7 +185,7 @@ void update(){
 }
 
 void update_ball(){
- ball.pos.x += cos(ballAngle);
+  ball.pos.x += cos(ballAngle);
   ball.pos.y += sin(ballAngle);
 
 
@@ -207,10 +216,23 @@ void update_ball(){
 
 
   //Someone scores
-  if(ball.pos.x < 0 || rectRight(ball) > screenSize.x)
-    resetGame();
+  if(ball.pos.x < 0)
+    player_score(&score_p1);
+  else if(rectRight(ball) > screenSize.x)
+    player_score(&score_p2);
 }
 
+void playerScore(int* player_score)
+{
+    resetBall();
+
+    (*player_score)++;
+
+    if(*playerScore > 3)
+      resetGame();
+}
+
+//Control player 1
 void update_player1 (){
   if (btn4_down()){
     moveUp(&player1);
@@ -221,6 +243,7 @@ void update_player1 (){
   }
 }
 
+//Control player 2
 void update_player2 (){
   if (btn2_down()){
     moveUp(&player2);
@@ -231,6 +254,18 @@ void update_player2 (){
   }
 }
 
+void update_AI(){
+
+  double diff = rectCenter(player2).y - rectCenter(ball).y;
+
+  if(diff > player2.size.y/2)
+    moveUp(&player2);
+  else if(diff < -player2.size.y/2)
+    moveDown(&player2);
+
+}
+
+//Update menu
 void update_menu(){
 
   if(btn4_pressed())
@@ -238,7 +273,9 @@ void update_menu(){
   else if(btn3_pressed())
     menu_down();
   else if(btn1_pressed())
+  {
     gameState = menuState;
+  }
 
 }
 
@@ -270,7 +307,7 @@ void draw(){
 
     default:
     case Menu:
-
+      display_menu();
     break;
   }
 
@@ -286,6 +323,19 @@ void display_rectangle(struct Rectangle rect){
       display_pixel((int)rect.pos.x + i, (int)rect.pos.y + j);
     }
   }
+}
+
+//Displays the menu on the screen
+void display_menu()
+{
+    for(int i = 0; i < 3; i++)
+    {
+      char toPrint[40] = menuText[i];
+      if(i == menuState)
+          strcat(toPrint, "<--");
+
+      display_string(i,toPrint);
+    }
 }
 
 
@@ -403,6 +453,18 @@ void ballPaddleAngle(struct Rectangle player){
     offset *= -1;
 
   setBallAngle(ballAngle + offset);
+
+
+  //Contstrains angle to not be to vertical
+  if(ballAngle > PI/3 && ballAngle <= PI/2)
+    ballAngle = PI/3;
+  else if(ballAngle < 2*PI/3 && ballAngle > PI/2)
+    ballAngle = 2*PI/3;
+  else if(ballAngle > 4*PI/3 && ballAngle <= 3*PI/2)
+    ballAngle = 4*PI/3;
+  else if(ballAngle < 5*PI/3 && ballAngle > 3*PI/2)
+      ballAngle = 5*PI/3;
+
 }
 
 //-----------------------------------------------
