@@ -178,9 +178,9 @@ void update_ball(){
 
 void update_menu(){
 
-  if(btn3_pressed())
+  if(btn4_pressed())
     menu_up();
-  else if(btn2_pressed())
+  else if(btn3_pressed())
     menu_down();
   else if(btn1_pressed())
     gameState = menuState;
