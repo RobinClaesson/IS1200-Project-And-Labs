@@ -362,9 +362,9 @@ int get_buttons(){
 
 
 double cos (double x){
-  return 1 - (x*x)/2;
+  return 1 - (x*x)/2 + (x*x*x*x)/24 - (x*x*x*x*x*x)/720;
 }
 //Taylorapproximation for sin
 double sin (double x){
-  return y = x - (x*x*x)/6;
+  return y = x - (x*x*x)/6 + (x*x*x*x*x)/120 - (x*x*x*x*x*x*x)5040;
 }
