@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
 #define PI 3.14159
 
 //-----------------------------------------------
@@ -81,8 +82,7 @@ void resetGame(){
   ballAngle = PI;
 }
 
-void game_init()
-{
+void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
   gameState = VsHuman;
 
@@ -93,9 +93,8 @@ void game_init()
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
-void update()
-{
-  switch{
+void update(){
+  switch(gameState){
     
     case VsHuman:
     update_ball();
@@ -171,7 +170,7 @@ void update_highscore(){
 void draw(){
   clear_buffer();
 
-  switch{  
+  switch(gameState){  
     case VsHuman:
     case VsAI:
 
