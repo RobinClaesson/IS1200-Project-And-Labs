@@ -277,3 +277,8 @@ void display_update() {
 		  spi_send_recv(framebuffer[i][j]);
 	}
 }
+
+void led_init()
+{
+
+}

@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PI 3.14159
 #define clearScreen() printf("\033[H\033[J")
+
+
+#define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 //-----------------------------------------------
 //Structures
@@ -32,20 +34,19 @@ void update();
 void update_ball();
 void update_menu();
 void update_highscore();
-
-
-/*
-double cos (double x){
-  return 1 - (x*x)/2 + (x*x*x*x)/24 - (x*x*x*x*x*x)/720;
-}
-//Taylorapproximation for sin
-double sin (double x){
-  return x - (x*x*x)/6 + (x*x*x*x*x)/120 - (x*x*x*x*x*x*x)/5040;
-}*/
-
+void update_player1();
+void update_player2();
+void update_AI();
+void player_score(int* player_score);
+void resetBall();
+void display_menu();
 
 void draw();
 void display_rectangle(struct Rectangle rect);
+void timer_init();
+
+void menu_up();
+void menu_down();
 
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
@@ -60,12 +61,6 @@ void moveDown(struct Rectangle* rect);
 void setBallAngle(double angle);
 void ballPaddleAngle(struct Rectangle rect);
 
-void printPoint(struct Point point);
-void printRect(struct Rectangle rect);
-void printGame();
-void printGameStatus();
-void getControlChar();
-
 //-----------------------------------------------
 //Global Variables
 //-----------------------------------------------
@@ -78,77 +73,90 @@ struct Rectangle player1;
 struct Rectangle player2;
 
 enum GameState{VsHuman, VsAI, HighScore, Menu}gameState, menuState;
+char* menuText[3] = {"PvP", "PvE", "HighScores"};
 
-double debug = 0;
+int score_p1, score_p2;
 
+char input;
 //-----------------------------------------------
 //Main / Init / Resets
 //-----------------------------------------------
-int main() {
+int main(void) {
+
+  /* FROM LAB 3
+This will set the peripheral bus clock to the same frequency
+as the sysclock. That means 80 MHz, when the microcontroller
+is running at 80 MHz. Changed 2017, as recommended by Axel.
+*/
+
   game_init();
 
-  draw();
-
   update();
-	return 0;
+
+  return 0;
 }
 
 void resetGame(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 
+  resetBall();
+
+  score_p1 = 0;
+  score_p2 = 0;
+}
+
+void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
   ballAngle = PI;
 }
 
-void game_init()
-{
+void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = VsAI;
+  gameState = Menu;
+  menuState = VsHuman;
 
   resetGame();
 }
+
 
 
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
 void update(){
-  switch(gameState){
-    case VsHuman:
-    update_ball();
-    break;
 
-    case VsAI:
-    update_ball();
+    switch(gameState){
 
-    double diff = rectCenter(player2).y - rectCenter(ball).y;
+      case VsHuman:
+      update_ball();
+      update_player1();
+      update_player2();
 
-    if(diff > player2.size.y/2)
-      moveUp(&player2);
-    else if(diff < -player2.size.y/2)
-      moveDown(&player2);
+      break;
 
-    break;
+      case VsAI:
+      update_ball();
+      update_player1();
+      update_AI();
+      break;
 
-    case HighScore:
-    update_highscore();
-    break;
+      case HighScore:
+      update_highscore();
+      break;
 
-    default:
-    case Menu:
-    update_menu();
-    break;
-  }
+      default:
+      case Menu:
+      update_menu();
+      break;
+    }
 
-  draw();
-
-  getControlChar();
-  update();
+    draw();
+    update();
 }
 
 void update_ball(){
- ball.pos.x += cos(ballAngle);
+  ball.pos.x += cos(ballAngle);
   ball.pos.y += sin(ballAngle);
 
 
@@ -179,11 +187,49 @@ void update_ball(){
 
 
   //Someone scores
-  if(ball.pos.x < 0 || rectRight(ball) > screenSize.x)
-    resetGame();
+  if(ball.pos.x < 0)
+    player_score(&score_p1);
+  else if(rectRight(ball) > screenSize.x)
+    player_score(&score_p2);
 }
 
+void player_score(int* player_score)
+{
+    resetBall();
+
+    //display_score(score_p1, score_p2);
+
+    (*player_score)++;
+
+
+    if((*player_score) > 3)
+      resetGame();
+}
+
+//Control player 1
+void update_player1 (){
+
+}
+
+//Control player 2
+void update_player2 (){
+
+}
+
+void update_AI(){
+
+  double diff = rectCenter(player2).y - rectCenter(ball).y;
+
+  if(diff > player2.size.y/2)
+    moveUp(&player2);
+  else if(diff < -player2.size.y/2)
+    moveDown(&player2);
+
+}
+
+//Update menu
 void update_menu(){
+
 
 
 }
@@ -198,26 +244,67 @@ void update_highscore(){
 
 //Main Draw function
 void draw(){
-
-  clearScreen();
+  clear_buffer();
 
   switch(gameState){
     case VsHuman:
     case VsAI:
-    printGame();
-    printGameStatus();
+
+      display_rectangle(player1);
+      display_rectangle(player2);
+      display_rectangle(ball);
+
     break;
 
-    case HighScore:
-
-    break;
-
-    default:
     case Menu:
-
+      display_menu();
     break;
   }
 
+  display_update();
+}
+
+//Draw a filled rectangle
+void display_rectangle(struct Rectangle rect){
+  int i, j;
+
+  for (i = 0; i < rect.size.x; i++){
+    for (j = 0; j < rect.size.y; j++){
+      display_pixel((int)rect.pos.x + i, (int)rect.pos.y + j);
+    }
+  }
+}
+
+//Displays the menu on the screen
+void display_menu()
+{
+  display_string(0, ("ABCD"));
+  display_pixel(31, 31);
+
+  display_update();
+/*  //PvP
+  if(menuState == 0)
+    toPrint = "Play vs Human <--";
+  else
+      toPrint = "Play vs Human";
+
+  display_string(0, toPrint);
+
+  //PvE
+  if(menuState == 1)
+    toPrint = "Play vs AI <--";
+  else
+      toPrint = "Play vs AI";
+
+  display_string(0, toPrint);
+
+  //Highscore
+  if(menuState == 2)
+    toPrint = "Highscores <--";
+  else
+      toPrint = "Highscores";
+
+  display_string(0, toPrint);*/
 }
 
 
@@ -335,6 +422,61 @@ void ballPaddleAngle(struct Rectangle player){
     offset *= -1;
 
   setBallAngle(ballAngle + offset);
+
+
+  //Contstrains angle to not be to vertical
+  if(ballAngle > PI/3 && ballAngle <= PI/2)
+    ballAngle = PI/3;
+  else if(ballAngle < 2*PI/3 && ballAngle > PI/2)
+    ballAngle = 2*PI/3;
+  else if(ballAngle > 4*PI/3 && ballAngle <= 3*PI/2)
+    ballAngle = 4*PI/3;
+  else if(ballAngle < 5*PI/3 && ballAngle > 3*PI/2)
+      ballAngle = 5*PI/3;
+
+}
+
+//-----------------------------------------------
+// Menu Functions
+//-----------------------------------------------
+void menu_up()
+{
+  switch (menuState)
+  {
+
+    case VsHuman:
+      menuState = HighScore;
+      break;
+
+    default:
+    case VsAI:
+      menuState = VsHuman;
+      break;
+
+    case HighScore:
+      menuState = VsAI;
+      break;
+
+  }
+}
+
+void menu_down()
+{
+  switch (menuState)
+  {
+      case VsHuman:
+      menuState = VsAI;
+      break;
+
+    case VsAI:
+      menuState = HighScore;
+      break;
+
+    default:
+    case HighScore:
+      menuState = VsHuman;
+      break;
+  }
 }
 
 
@@ -400,35 +542,7 @@ void printGameStatus()
    printf("\nDebug: %.2f\n", debug);
 }
 
-void getControlChar()
+void update_input()
 {
-  char c;
-  scanf("%c", &c);
-
-  switch(gameState){
-    case VsHuman:
-    case VsAI:
-    if(c == 'w')
-      moveUp(&player1);
-
-    if(c == 's')
-      moveDown(&player1);
-
-    if(c == 'u')
-      moveUp(&player2);
-
-    if(c == 'j')
-      moveDown(&player2);
-
-    break;
-
-    case HighScore:
-
-    break;
-
-    default:
-    case Menu:
-
-    break;
-  }
+  scanf("%c", &input);
 }
