@@ -209,7 +209,7 @@ void display_rectangle(struct Rectangle rect){
 
   for (i = 0; i < rect.size.x; i++){
     for (j = 0; j < rect.size.y; j++){
-      display_pixel(rect.pos.x + i, rect.pos.y + j);
+      display_pixel((int)rect.pos.x + i, (int)rect.pos.y + j);
     }
   }
 }
