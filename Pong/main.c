@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PI 3.14159265359
+#define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 //-----------------------------------------------
 //Structures
@@ -75,6 +75,11 @@ char* menuSelect = "<-";
 //-----------------------------------------------
 int main(void) {
 
+  /* FROM LAB 3
+This will set the peripheral bus clock to the same frequency
+as the sysclock. That means 80 MHz, when the microcontroller
+is running at 80 MHz. Changed 2017, as recommended by Axel.
+*/
   SYSKEY = 0xAA996655;  /* Unlock OSCCON, step 1 */
   SYSKEY = 0x556699AA;  /* Unlock OSCCON, step 2 */
   while(OSCCON & (1 << 21)); /* Wait until PBDIV ready */
@@ -100,7 +105,7 @@ void resetGame(){
 }
 
 void game_init(){
-  screenSize = createPoint(127, 31); //128x32 screen size
+  screenSize = createPoint(128, 32); //128x32 screen size
   gameState = VsHuman;
   menuState = VsHuman;
 
@@ -133,7 +138,7 @@ void timer_init(){
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
-void user_isr(){
+void update(){
 
   if (IFS(0) & 0x100){
     //reset interrupt flag
