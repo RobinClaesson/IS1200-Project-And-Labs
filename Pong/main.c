@@ -90,8 +90,6 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   while(OSCCON & (1 << 21));  /* Wait until PBDIV ready */
   SYSKEY = 0x0;  /* Lock OSCCON */
 
-  PORTESET = 0xff;
-
   display_init();
   game_init();
   timer_init();
@@ -184,6 +182,10 @@ void update(){
     }
 
     draw();
+    if((PORTE & 0xff) == 0xff)
+      PORTE &= 0xfffff00;
+    else
+      PORTE++;
   }
 
 }
@@ -229,6 +231,8 @@ void update_ball(){
 void player_score(int* player_score)
 {
     resetBall();
+
+    //display_score(score_p1, score_p2);
 
     (*player_score)++;
 
