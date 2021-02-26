@@ -93,7 +93,7 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   display_init();
   game_init();
   timer_init();
-  
+  led_init();
 
   while(1);
 
@@ -334,27 +334,22 @@ void display_menu()
   display_update();
 /*  //PvP
   if(menuState == 0)
-    toPrint = "Play vs Human <--";
+    display_string(0, "PvP <--");
   else
-      toPrint = "Play vs Human";
-
-  display_string(0, toPrint);
+    display_string(0, "PvP");
 
   //PvE
   if(menuState == 1)
-    toPrint = "Play vs AI <--";
+    display_string(1, "PvE <--");
   else
-      toPrint = "Play vs AI";
-
-  display_string(0, toPrint);
+    display_string(1, "PvE");
 
   //Highscore
   if(menuState == 2)
-    toPrint = "Highscores <--";
+    display_string(3, "HighScores <--");
   else
-      toPrint = "Highscores";
-
-  display_string(0, toPrint);*/
+    display_string(3, "HighScores");
+*/
 }
 
 
