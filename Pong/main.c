@@ -203,7 +203,7 @@ void draw(){
   display_update();
 }
 
-//Draw a rectangle
+//Draw a filled rectangle
 void display_rectangle(struct Rectangle rect){
   int i, j;
 

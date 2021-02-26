@@ -242,11 +242,13 @@ void display_string(int line, char *s) {
 			textbuffer[line][i] = ' ';
 }
 
+//draw a point
 void display_pixel (int x, int y){
     int byteindex = y%8;
 
     framebuffer[y/8][x] |= (1 << byteindex);
 }
+
 
 void clear_buffer(){
 	int i, j;
