@@ -38,6 +38,9 @@ void input_init();
 int get_switches();
 int get_buttons();
 
+void menu_up();
+void menu_down();
+
 int rectBot(struct Rectangle rect);
 int rectRight(struct Rectangle rect);
 struct Point rectCenter(struct Rectangle rect);
@@ -63,6 +66,9 @@ struct Rectangle player1;
 struct Rectangle player2;
 
 enum GameState{VsHuman, VsAI, HighScore, Menu}gameState, menuState;
+char* menuText 
+
+
 
 //-----------------------------------------------
 //Main / Init / Resets
@@ -99,11 +105,17 @@ void game_init(){
 	return 0;
 }
 
+void timer_init(){
+
+}
+
 
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
 void update(){
+  update_input();
+
   switch(gameState){
 
     case VsHuman:
@@ -165,6 +177,7 @@ void update_ball(){
 
 void update_menu(){
 
+  
 
 }
 
@@ -331,40 +344,57 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(ballAngle + offset);
 }
 
-void input_init(){
-  //set buttons 2-4 and the switches as inputs
-  TRISDSET =  0xfe0;
-
-  //set button 1 as input
-  TRISFSET = 0x2;
-}
-
-void timer_init(){
-
-}
-
-// returns value of the 4  on-board switches
-int get_switches(){
-  return (PORTD &= 0xf00) >> 8;
-}
-
-// returns the value of 4 of the on-board buttons
-int get_buttons(){
-  return ((PORTD &= 0xe0) >> 4) | ((PORTF &= 0x2) >> 1);
-}
-
-
-
-
-
-
-
-
-
 double cos (double x){
   return 1 - (x*x)/2;
 }
 //Taylorapproximation for sin
 double sin (double x){
   return y = x - (x*x*x)/6;
+}
+
+
+
+
+//-----------------------------------------------
+// Menu Functions
+//-----------------------------------------------
+void menu_up()
+{
+  switch (menuState)
+  { 
+    
+    case VsHuman:
+      menuState = HighScore;
+      break;
+    
+    default:
+    case VsAI:
+      menuState = VsHuman;
+      break;
+
+    case HighScore:
+      menuState = VsAI;
+      break;
+
+  }
+}
+
+void menu_down()
+{
+  switch (menuState)
+  { 
+      case VsHuman:
+      menuState = VsAI;
+      break;
+    
+    case VsAI:
+      menuState = HighScore;
+      break;
+
+    default:
+    case HighScore:
+      menuState = VsHuman;
+      break;
+
+  }
 }
