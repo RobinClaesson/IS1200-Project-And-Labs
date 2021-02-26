@@ -33,6 +33,17 @@ void update_ball();
 void update_menu();
 void update_highscore();
 
+
+/*
+double cos (double x){
+  return 1 - (x*x)/2 + (x*x*x*x)/24 - (x*x*x*x*x*x)/720;
+}
+//Taylorapproximation for sin
+double sin (double x){
+  return x - (x*x*x)/6 + (x*x*x*x*x)/120 - (x*x*x*x*x*x*x)/5040;
+}*/
+
+
 void draw();
 void display_rectangle(struct Rectangle rect);
 
@@ -318,16 +329,6 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(ballAngle + offset);
 }
 
-/*
-//Taylorapproximaiton for cos
-double cos (double x){
-  return 1 - (x*x)/2 ;
-}
-//Taylorapproximation for sin
-double sin (double x){
-   return x - (x*x*x)/6;
-}
-*/
 
 //-----------------------------------------------
 // Terminal functions for the console version
