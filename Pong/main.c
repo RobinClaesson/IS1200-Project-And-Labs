@@ -33,6 +33,10 @@ void update_menu();
 void update_highscore();
 void update_player1();
 void update_player2();
+void update_AI();
+void player_score(int* player_score);
+void resetBall();
+void display_menu();
 
 void draw();
 void display_rectangle(struct Rectangle rect);
@@ -114,7 +118,7 @@ void resetBall(){
 
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = VsHuman;
+  gameState = VsAI;
   menuState = VsHuman;
 
   resetGame();
@@ -222,13 +226,14 @@ void update_ball(){
     player_score(&score_p2);
 }
 
-void playerScore(int* player_score)
+void player_score(int* player_score)
 {
     resetBall();
 
     (*player_score)++;
 
-    if(*playerScore > 3)
+
+    if((*player_score) > 3)
       resetGame();
 }
 
@@ -328,14 +333,7 @@ void display_rectangle(struct Rectangle rect){
 //Displays the menu on the screen
 void display_menu()
 {
-    for(int i = 0; i < 3; i++)
-    {
-      char toPrint[40] = menuText[i];
-      if(i == menuState)
-          strcat(toPrint, "<--");
 
-      display_string(i,toPrint);
-    }
 }
 
 
