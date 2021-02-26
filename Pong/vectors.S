@@ -206,7 +206,7 @@ sw $25,68($sp) # $t9
 # (the C compiler will see to that).
 
 # call user's handler
-jal update
+jal user_isr
 nop
 
 # restore saved registers

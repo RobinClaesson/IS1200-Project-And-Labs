@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PI 3.14159
+#define PI 3.14159265359
 
 //-----------------------------------------------
 //Structures
@@ -31,12 +31,12 @@ void update();
 void update_ball();
 void update_menu();
 void update_highscore();
+void update_player1();
+void update_player2();
 
 void draw();
 void display_rectangle(struct Rectangle rect);
-void input_init();
-int get_switches();
-int get_buttons();
+void timer_init();
 
 void menu_up();
 void menu_down();
@@ -66,21 +66,29 @@ struct Rectangle player1;
 struct Rectangle player2;
 
 enum GameState{VsHuman, VsAI, HighScore, Menu}gameState, menuState;
-char* menuText 
-
+char* menuText[3] = {"PvP", "PvE", "HighScores"};
+char* menuSelect = "<-";
 
 
 //-----------------------------------------------
 //Main / Init / Resets
 //-----------------------------------------------
-int main() {
+int main(void) {
+
+  SYSKEY = 0xAA996655;  /* Unlock OSCCON, step 1 */
+  SYSKEY = 0x556699AA;  /* Unlock OSCCON, step 2 */
+  while(OSCCON & (1 << 21)); /* Wait until PBDIV ready */
+  OSCCONCLR = 0x180000; /* clear PBDIV bit <0,1> */
+  while(OSCCON & (1 << 21));  /* Wait until PBDIV ready */
+  SYSKEY = 0x0;  /* Lock OSCCON */
+
   display_init();
   game_init();
+  timer_init();
+  
+  while(1);
 
-  draw();
-
-  //update();
-	return 0;
+  return 0;
 }
 
 void resetGame(){
@@ -92,52 +100,74 @@ void resetGame(){
 }
 
 void game_init(){
-  screenSize = createPoint(128, 32); //128x32 screen size
+  screenSize = createPoint(127, 31); //128x32 screen size
   gameState = VsHuman;
   menuState = VsHuman;
 
-  display_pixel(0,0);
-  display_pixel(127,0);
-  display_pixel(0,31);
-  display_pixel(127,31);
-  //draw();
-  display_update();
-  //update();
-	return 0;
+  resetGame();
 }
 
 void timer_init(){
+  // timer 2 clear
+  T2CON = 0x0;
 
+  // set the prescale to 256
+  T2CONSET = 0x7 << 4;
+
+  // set period register to ~60hz
+  PR2 = 5208;
+
+  // set as ON
+  T2CONSET = 1 << 15;
+
+  // enable interrupt for timer 2
+  IEC(0) |= (1 << 8);
+
+  // set priority for timer 2
+  IPC(2) |= 4;
+
+  enable_interrupt();
 }
 
 
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
-void update(){
-  update_input();
+void user_isr(){
+/*
+  if (IFS(0) & 0x100){
+    //reset interrupt flag
+    IFS(0) &= 0xfffffeff;
+    update_input();
 
-  switch(gameState){
 
-    case VsHuman:
-    update_ball();
-    break;
 
-    case VsAI:
-    update_ball();
-    break;
+    switch(gameState){
 
-    case HighScore:
-    update_highscore();
-    break;
+      case VsHuman:
+      update_ball();
+      update_player1();
+      update_player2();
 
-    default:
-    case Menu:
-    update_menu();
-    break;
+      break;
+
+      case VsAI:
+      update_ball();
+      break;
+
+      case HighScore:
+      update_highscore();
+      break;
+
+      default:
+      case Menu:
+      update_menu();
+      break;
+    }
+
+    draw();
   }
-
-  draw();
+*/
 }
 
 void update_ball(){
@@ -174,6 +204,26 @@ void update_ball(){
   //Someone scores
   if(ball.pos.x < 0 || rectRight(ball) > screenSize.x)
     resetGame();
+}
+
+void update_player1 (){
+  if (btn4_down()){
+    moveUp(&player1);
+  }
+
+  if (btn3_down()){
+    moveDown(&player1);
+  }
+}
+
+void update_player2 (){
+  if (btn2_down()){
+    moveUp(&player2);
+  }
+
+  if (btn1_down()){
+    moveDown(&player2);
+  }
 }
 
 void update_menu(){
@@ -350,27 +400,18 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(ballAngle + offset);
 }
 
-//Taylorapproximation for cos
-double cos (double x){
-  return 1 - (x*x)/2 + (x*x*x*x)/24 - (x*x*x*x*x*x)/720;
-}
-//Taylorapproximation for sin
-double sin (double x){
-  return x - (x*x*x)/6 + (x*x*x*x*x)/120 - (x*x*x*x*x*x*x)5040;
-}
-
 //-----------------------------------------------
 // Menu Functions
 //-----------------------------------------------
 void menu_up()
 {
   switch (menuState)
-  { 
-    
+  {
+
     case VsHuman:
       menuState = HighScore;
       break;
-    
+
     default:
     case VsAI:
       menuState = VsHuman;
@@ -386,11 +427,11 @@ void menu_up()
 void menu_down()
 {
   switch (menuState)
-  { 
+  {
       case VsHuman:
       menuState = VsAI;
       break;
-    
+
     case VsAI:
       menuState = HighScore;
       break;
@@ -401,5 +442,3 @@ void menu_down()
       break;
   }
 }
-
-
