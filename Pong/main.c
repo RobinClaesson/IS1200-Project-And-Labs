@@ -93,7 +93,8 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   display_init();
   game_init();
   timer_init();
-
+  led_init();
+  
   while(1);
 
   return 0;
@@ -116,7 +117,7 @@ void resetBall(){
 
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = VsAI;
+  gameState = Menu;
   menuState = VsHuman;
 
   resetGame();
@@ -182,12 +183,7 @@ void update(){
     }
 
     draw();
-    if((PORTE & 0xff) == 0xff)
-      PORTE &= 0xfffff00;
-    else
-      PORTE++;
   }
-
 }
 
 void update_ball(){
@@ -310,17 +306,12 @@ void draw(){
 
     break;
 
-    case HighScore:
-
-    break;
-
-    default:
     case Menu:
       display_menu();
     break;
   }
 
-  display_update(gameState);
+  display_update();
 }
 
 //Draw a filled rectangle
@@ -337,9 +328,11 @@ void display_rectangle(struct Rectangle rect){
 //Displays the menu on the screen
 void display_menu()
 {
-  char* toPrint = "";
+  display_string(0, ("ABCD"));
+  display_pixel(31, 31);
 
-  //PvP
+  display_update();
+/*  //PvP
   if(menuState == 0)
     toPrint = "Play vs Human <--";
   else
@@ -361,7 +354,7 @@ void display_menu()
   else
       toPrint = "Highscores";
 
-  display_string(0, toPrint);
+  display_string(0, toPrint);*/
 }
 
 
