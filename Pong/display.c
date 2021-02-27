@@ -299,17 +299,21 @@ void led_init()
 
 void display_score(int score_p1, int score_p2){
 
-	int dscore1 = 0x1;
-	int dscore2 = 0x1;
+	int dscore1 = 0x10;
+	int dscore2 = 0x8;
 	int i, j;
 
-	for (i = 0; i <= score_p1; i++){
+	for (i = 0; i < score_p1; i++){
 		PORTESET = dscore1;
-		dscore1 << 0x1;
+		dscore1 *= 2;
 	}
-/*
-	for (j = 0; j <= score_p2; j++){
+
+	for (j = 0; j < score_p2; j++){
 		PORTE |= dscore2;
-		dscore2 << 1;
-	}*/
+		dscore2 = dscore2/2;
+	}
+}
+
+void led_reset(){
+	PORTECLR = 0xFF;
 }

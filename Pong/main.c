@@ -120,6 +120,7 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
 void resetGame(){
   resetPlayers();
   resetBall();
+  led_reset();
 
   score_p1 = 0;
   score_p2 = 0;
@@ -243,9 +244,9 @@ void update_ball(){
 
   //Someone scores
   if(ball.pos.x < 0)
-    player_score(&score_p1);
-  else if(rectRight(ball) > screenSize.x)
     player_score(&score_p2);
+  else if(rectRight(ball) > screenSize.x)
+    player_score(&score_p1);
 }
 
 void player_score(int* score)
@@ -346,6 +347,8 @@ void update_highscore(){
 //Main Draw function
 void draw(){
   clear_buffer();
+
+  display_pixel(score_p1,score_p2);
 
   switch(gameState){
     case VsHuman:
