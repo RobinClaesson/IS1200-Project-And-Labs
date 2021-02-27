@@ -90,6 +90,7 @@ struct Rectangle player2;
 enum GameState{VsHuman, VsAI, Highscore, Menu, ChooseDiff, DisplayWinner, InputName}gameState, menuState;
 
 bool PlayingVsAI = false;
+bool ShowHighscore = false;
 char name[3] = {'a', 'a', 'a'};
 
 
@@ -203,7 +204,7 @@ void update(){
       update_player1();
       update_AI();
 
-      if (highscore > 0)
+      if (new_highscore > 0)
         new_highscore--;
 
       break;
@@ -333,8 +334,11 @@ void update_menu(){
   else if(btn1_pressed())
   {
   //Checks if the player is choosing "VsAI"
-    if(menuState == 1)
+    if(menuState == 1 || menuState ==2){
+      if (menuState == 2)
+        ShowHighscore = true;
       gameState = ChooseDiff;
+    }
     else
       gameState = menuState;
   }
@@ -356,12 +360,17 @@ void update_chooseDiff(){
 
   else if(btn1_pressed())
   {
-    PlayingVsAI = true;
-    gameState = VsAI;
+    if (ShowHighscore == true){
+      gameState = Highscore;
+    } else {
+      PlayingVsAI = true;
+      gameState = VsAI;
+    }
   }
 
   else if(btn2_pressed())
   {
+    ShowHighscore = false;
     gameState = Menu;
   }
 
@@ -383,6 +392,7 @@ void update_highscore(){
 
   else if(btn2_pressed())
   {
+    ShowHighscore = false;
     gameState = Menu;
   }
 }
@@ -701,7 +711,7 @@ void choose_name(){
 
       add_highscore(name, new_highscore, ai_diff);
       new_highscore = 100000;
-      
+
       gameState = Highscore;
     } else
       i++;

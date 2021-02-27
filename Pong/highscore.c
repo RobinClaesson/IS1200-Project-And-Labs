@@ -50,7 +50,7 @@ char* get_highscore(int difficulty, int index)
 {
     int i;
 
-    snprintf(buff, 12, "%d: %s %d", index+1, names[difficulty][index], scores[difficulty][index]);
+    //snprintf(buff, 12, "%d: %s %d", index+1, names[difficulty][index], scores[difficulty][index]);
 
     return buff;
 }
