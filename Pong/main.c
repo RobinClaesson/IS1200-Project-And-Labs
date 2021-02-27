@@ -334,6 +334,11 @@ void update_chooseDiff(){
     gameState = VsAI;
   }
 
+  else if(btn2_pressed())
+  {
+    gameState = Menu;
+  }
+
 }
 void update_highscore(){
 
@@ -362,7 +367,7 @@ void draw(){
     break;
 
     case ChooseDiff:
-    display_chooseDiff();
+      display_chooseDiff();
     break;
   }
 
@@ -406,26 +411,23 @@ void display_menu()
 
 void display_chooseDiff()
 {
-   //PvP
+    display_string(0,"---Difficulty---");
+
+
     if(ai_diff == 0)
-      display_string(0, "Easy <--");
+      display_string(1, "Easy <--");
     else
-      display_string(0, "Easy");
+      display_string(1, "Easy");
 
     if(ai_diff == 1)
-      display_string(1, "Medium <--");
+      display_string(2, "Medium <--");
     else
-      display_string(1, "Medium");
+      display_string(2, "Medium");
 
     if(ai_diff == 2)
-      display_string(2, "Hard <--");
+      display_string(3, "Hard <--");
     else
-      display_string(2, "Hard");
-
-    if(ai_diff == 3)
-      display_string(3, "Impossible <--");
-    else
-      display_string(3, "Impossible");
+      display_string(3, "Hard");
 
 }
 
