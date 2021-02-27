@@ -91,7 +91,7 @@ enum GameState{VsHuman, VsAI, Highscore, Menu, ChooseDiff, DisplayWinner, InputN
 
 bool PlayingVsAI = false;
 bool ShowHighscore = false;
-char name[3] = {'a', 'a', 'a'};
+char name[4] = {'a', 'a', 'a', 0x0};
 
 
 int score_p1, score_p2;
@@ -100,7 +100,7 @@ int ai_diff = 0, ai_tick = 0;
 
 int highscore_view = 0;
 
-int new_highscore = 0;
+int new_highscore = 100000;
 
 //-----------------------------------------------
 //Main / Init / Resets
@@ -123,6 +123,12 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   game_init();
   timer_init();
   led_init();
+
+  add_highscore("nea", 19999, 1);
+  add_highscore("aea", 19999, 2);
+  add_highscore("nsa", 19999, 1);
+  add_highscore("nes", 19999, 0);
+
 
   while(1);
 
@@ -730,7 +736,7 @@ void choose_name(){
 
   if (btn4_pressed()){
     if (name[i] > 0x61){
-      name[i]++;
+      name[i]--;
     } else
       name[i] = 0x7a;
   }
