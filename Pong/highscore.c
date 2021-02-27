@@ -45,7 +45,17 @@ int get_score(int difficulty, int index)
   return scores[difficulty][index];
 }
 
-/*int main()
+char buff[20];
+char* get_highscore(int difficulty, int index)
+{
+    int i;
+
+    snprintf(buff, 12, "%d: %s %d", index+1, names[difficulty][index], scores[difficulty][index]);
+
+    return buff;
+}
+
+int main()
 {
 
     add_highscore("roc", 100, 0);
@@ -59,5 +69,18 @@ int get_score(int difficulty, int index)
 
     printf("På plats 3: %s, %d\n", get_name(0, 3), get_score(0,3));
 
+    printf("%s\n", get_highscore(0, 0));
+
   return 0;
+}
+
+/*int main()
+{
+   int i;
+   char buf[12];
+
+   for (i = 0; i < 100; i++) {
+      snprintf(buf, 12, "pre_%d_suff", i); // puts string into buffer
+      printf("%s\n", buf); // outputs so you can see it
+   }
 }*/
