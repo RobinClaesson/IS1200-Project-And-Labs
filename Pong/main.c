@@ -306,7 +306,11 @@ void update_menu(){
     menu_down();
   else if(btn1_pressed())
   {
-    gameState = menuState;
+  //Checks if the player is choosing "VsAI"
+    if(menuState == 1)
+      gameState = ChooseDiff;
+    else
+      gameState = menuState;
   }
 }
 
@@ -381,15 +385,15 @@ void display_menu()
   display_string(0,"------Pong------");
 //PvP
   if(menuState == 0)
-    display_string(1, "PvP <--");
+    display_string(1, "PvE <--");
   else
-    display_string(1, "PvP");
+    display_string(1, "PvE");
 
   //PvE
   if(menuState == 1)
-    display_string(2, "PvE <--");
+    display_string(2, "PvP <--");
   else
-    display_string(2, "PvE");
+    display_string(2, "PvP");
 
   //Highscore
   if(menuState == 2)
@@ -566,12 +570,12 @@ void menu_up()
       break;
 
     default:
-    case ChooseDiff:
+    case VsAI:
       menuState = VsHuman;
       break;
 
     case HighScore:
-      menuState = ChooseDiff;
+      menuState = VsAI;
       break;
 
   }
@@ -582,10 +586,10 @@ void menu_down()
   switch (menuState)
   {
       case VsHuman:
-      menuState = ChooseDiff;
+      menuState = VsAI;
       break;
 
-    case ChooseDiff:
+    case VsAI:
       menuState = HighScore;
       break;
 
