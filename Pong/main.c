@@ -73,6 +73,7 @@ void menu_down();
 void update_highscore();
 void update_chooseDiff();
 void update_displayWinner();
+void choose_name();
 
 //-----------------------------------------------
 //Global Variables
@@ -85,9 +86,10 @@ double ballAngle = 0;
 struct Rectangle player1;
 struct Rectangle player2;
 
-enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff, DisplayWinner}gameState, menuState;
+enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff, DisplayWinner, InputName}gameState, menuState;
 
 bool PlayingVsAI = false;
+char name[3] = {'a', 'a', 'a'};
 
 
 
@@ -144,7 +146,7 @@ void resetPlayers()
 
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = Menu;
+  gameState = InputName;
   menuState = VsHuman;
 
   resetGame();
@@ -214,6 +216,12 @@ void update(){
 
       case DisplayWinner:
       update_displayWinner();
+      break;
+
+      case InputName:
+      choose_name();
+      display_string(0, "Input your name:");
+      display_string(2, name);
       break;
     }
     draw();
@@ -376,7 +384,9 @@ void update_displayWinner(){
 // Changes gameState if a button is pressed
   if (btn1_pressed() | btn2_pressed() |
       btn3_pressed() | btn4_pressed()){
-    if (PlayingVsAI = true){
+    if (PlayingVsAI == true){
+      resetGame();
+      PlayingVsAI = false;
       gameState = Menu;
     } else {
       resetGame();
@@ -641,5 +651,36 @@ void menu_down()
     case HighScore:
       menuState = VsHuman;
       break;
+  }
+}
+
+void choose_name(){
+  static int i = 0;
+  //name = "aaa";
+
+  if (btn1_pressed()){
+    if (i >= 2) {
+      //SUBMIT HIGHSCORE
+      gameState = Menu;
+    } else
+      i++;
+  }
+
+  if (btn2_pressed())
+    if (i > 0)
+      i--;
+
+  if (btn3_pressed()){
+    if (name[i] < 0x7a) {
+      name[i]++;
+    } else
+      name[i] = 0x61;
+  }
+
+  if (btn4_pressed()){
+    if (name[i] > 0x61){
+      name[i]++;
+    } else
+      name[i] = 0x7a;
   }
 }
