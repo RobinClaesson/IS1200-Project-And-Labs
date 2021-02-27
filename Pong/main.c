@@ -64,6 +64,7 @@ void draw();
 void display_rectangle(struct Rectangle rect);
 void display_menu();
 void display_chooseDiff();
+void display_highscore();
 
 //Menu
 void update_menu();
@@ -92,10 +93,11 @@ bool PlayingVsAI = false;
 char name[3] = {'a', 'a', 'a'};
 
 
-
 int score_p1, score_p2;
 
 int ai_diff = 0, ai_tick = 0;
+
+int highscore_view = 0;
 
 //-----------------------------------------------
 //Main / Init / Resets
@@ -138,8 +140,7 @@ void resetBall(){
   ballAngle = PI;
 }
 
-void resetPlayers()
-{
+void resetPlayers(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
 }
@@ -360,7 +361,24 @@ void update_chooseDiff(){
 
 }
 void update_highscore(){
+  if(btn4_pressed()){
+    highscore_view -= 3;
 
+    if(highscore_view < 0)
+    highscore_view = 6;
+  }
+
+  else if(btn3_pressed()){
+    highscore_view += 3;
+
+    if(highscore_view >= 9)
+    highscore_view = 0;
+  }
+
+  else if(btn2_pressed())
+  {
+    gameState = Menu;
+  }
 }
 
 void update_displayWinner(){
@@ -419,6 +437,10 @@ void draw(){
 
     case ChooseDiff:
       display_chooseDiff();
+    break;
+
+    case highscore:
+      display_highscore();
     break;
   }
 
@@ -480,6 +502,15 @@ void display_chooseDiff()
     else
       display_string(3, "Hard");
 
+}
+
+void display_highscore()
+{
+    display_string(0, "---Highscores---")
+
+    display_string(1, get_highscore(highscore_view));
+    display_string(2, get_highscore(highscore_view+1));
+    display_string(3, get_highscore(highscore_view+2));
 }
 
 
