@@ -50,9 +50,9 @@ char* get_highscore(int difficulty, int index)
 {
     int i;
     buff[0] = (char)(index + 49);
-    buff[3] = names[difficulty][0][0];
-    buff[4] = names[difficulty][0][1];
-    buff[5] = names[difficulty][0][2];
+    buff[3] = names[difficulty][index][0];
+    buff[4] = names[difficulty][index][1];
+    buff[5] = names[difficulty][index][2];
 
     int score = scores[difficulty][index];
 

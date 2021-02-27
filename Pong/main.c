@@ -524,9 +524,9 @@ void display_highscore()
 {
     display_string(0, "---Highscores---");
 
-    display_string(1, get_highscore(highscore_view));
-    display_string(2, get_highscore(highscore_view+1));
-    display_string(3, get_highscore(highscore_view+2));
+    display_string(1, get_highscore(ai_diff, highscore_view));
+    display_string(2, get_highscore(ai_diff,highscore_view+1));
+    display_string(3, get_highscore(ai_diff,highscore_view+2));
 }
 
 
