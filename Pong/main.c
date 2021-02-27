@@ -421,7 +421,7 @@ void update_displayWinner(){
     if (PlayingVsAI == true){
       resetGame();
       PlayingVsAI = false;
-      gameState = Menu;
+      gameState = InputName;
     } else {
       resetGame();
       gameState = Menu;
