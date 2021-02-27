@@ -348,8 +348,6 @@ void update_highscore(){
 void draw(){
   clear_buffer();
 
-  display_pixel(score_p1,score_p2);
-
   switch(gameState){
     case VsHuman:
     case VsAI:
