@@ -260,7 +260,7 @@ void clear_buffer(){
 	}
 }
 
-void display_update() {
+void display_update(int gameState) {
 	int i, j, k;
 	int c;
 	for(i = 0; i < 4; i++) {
@@ -273,8 +273,22 @@ void display_update() {
 
 		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
 
-		for(j = 0; j < 128; j++)
-		  spi_send_recv(framebuffer[i][j]);
+		// Checks if we are running a game
+		if (gameState <= 1){
+			for(j = 0; j < 128; j++)
+			  spi_send_recv(framebuffer[i][j]);
+		}
+		// Checks if we are in a menu
+		else if (gameState >= 2){
+			for(j = 0; j < 16; j++) {
+				c = textbuffer[i][j];
+				if(c & 0x80)
+					continue;
+
+				for(k = 0; k < 8; k++)
+					spi_send_recv(font[c*8 + k]);
+			}
+		}
 	}
 }
 

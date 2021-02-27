@@ -361,7 +361,7 @@ void draw(){
     break;
   }
 
-  display_update();
+  display_update(gameState);
 }
 
 //Draw a filled rectangle
@@ -378,28 +378,25 @@ void display_rectangle(struct Rectangle rect){
 //Displays the menu on the screen
 void display_menu()
 {
-  display_string(0, ("ABCD"));
-  display_pixel(31, 31);
-
-  display_update();
-/*  //PvP
+  display_string(0,"------Pong------");
+//PvP
   if(menuState == 0)
-    display_string(0, "PvP <--");
+    display_string(1, "PvP <--");
   else
-    display_string(0, "PvP");
+    display_string(1, "PvP");
 
   //PvE
   if(menuState == 1)
-    display_string(1, "PvE <--");
+    display_string(2, "PvE <--");
   else
-    display_string(1, "PvE");
+    display_string(2, "PvE");
 
   //Highscore
   if(menuState == 2)
     display_string(3, "HighScores <--");
   else
     display_string(3, "HighScores");
-*/
+
 }
 
 void display_chooseDiff()
