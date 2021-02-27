@@ -87,7 +87,7 @@ double ballAngle = 0;
 struct Rectangle player1;
 struct Rectangle player2;
 
-enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff, DisplayWinner, InputName}gameState, menuState;
+enum GameState{VsHuman, VsAI, Highscore, Menu, ChooseDiff, DisplayWinner, InputName}gameState, menuState;
 
 bool PlayingVsAI = false;
 char name[3] = {'a', 'a', 'a'};
@@ -98,6 +98,8 @@ int score_p1, score_p2;
 int ai_diff = 0, ai_tick = 0;
 
 int highscore_view = 0;
+
+int new_highscore = 0;
 
 //-----------------------------------------------
 //Main / Init / Resets
@@ -147,7 +149,7 @@ void resetPlayers(){
 
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
-  gameState = InputName;
+  gameState = Menu;
   menuState = VsHuman;
 
   resetGame();
@@ -200,9 +202,13 @@ void update(){
       update_ball();
       update_player1();
       update_AI();
+
+      if (highscore > 0)
+        new_highscore--;
+
       break;
 
-      case HighScore:
+      case Highscore:
       update_highscore();
       break;
 
@@ -439,7 +445,7 @@ void draw(){
       display_chooseDiff();
     break;
 
-    case highscore:
+    case Highscore:
       display_highscore();
     break;
   }
@@ -506,7 +512,7 @@ void display_chooseDiff()
 
 void display_highscore()
 {
-    display_string(0, "---Highscores---")
+    display_string(0, "---Highscores---");
 
     display_string(1, get_highscore(highscore_view));
     display_string(2, get_highscore(highscore_view+1));
@@ -651,7 +657,7 @@ void menu_up()
   {
 
     case VsHuman:
-      menuState = HighScore;
+      menuState = Highscore;
       break;
 
     default:
@@ -659,7 +665,7 @@ void menu_up()
       menuState = VsHuman;
       break;
 
-    case HighScore:
+    case Highscore:
       menuState = VsAI;
       break;
 
@@ -675,11 +681,11 @@ void menu_down()
       break;
 
     case VsAI:
-      menuState = HighScore;
+      menuState = Highscore;
       break;
 
     default:
-    case HighScore:
+    case Highscore:
       menuState = VsHuman;
       break;
   }
@@ -691,8 +697,12 @@ void choose_name(){
 
   if (btn1_pressed()){
     if (i >= 2) {
-      //SUBMIT HIGHSCORE
-      gameState = Menu;
+      i = 0;
+
+      add_highscore(name, new_highscore, ai_diff);
+      new_highscore = 100000;
+      
+      gameState = Highscore;
     } else
       i++;
   }

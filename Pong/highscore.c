@@ -55,7 +55,7 @@ char* get_highscore(int difficulty, int index)
     return buff;
 }
 
-int main()
+/*int main()
 {
 
     add_highscore("roc", 100, 0);
@@ -73,7 +73,7 @@ int main()
 
   return 0;
 }
-
+*/
 /*int main()
 {
    int i;
