@@ -50,9 +50,9 @@ char* get_highscore(int difficulty, int index)
 {
     int i;
     buff[0] = (char)(index + 49);
-    buff[3] = names[difficulty][0][0];
-    buff[4] = names[difficulty][0][1];
-    buff[5] = names[difficulty][0][2];
+    buff[3] = names[difficulty][index][0];
+    buff[4] = names[difficulty][index][1];
+    buff[5] = names[difficulty][index][2];
 
     int score = scores[difficulty][index];
 
@@ -111,9 +111,9 @@ char* get_highscore(int difficulty, int index)
     for(int i = 0; i < 9; i++)
       printf("N: %s | S: %d\n", names[0][i], scores[0][i]);
 
-    printf("På plats 3: %s, %d\n", get_name(0, 3), get_score(0,3));
-
     printf("%s\n", get_highscore(0, 0));
+    printf("%s\n", get_highscore(0, 1));
+    printf("%s\n", get_highscore(0, 2));
 
   return 0;
 }*/
