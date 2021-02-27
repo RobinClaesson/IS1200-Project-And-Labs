@@ -45,24 +45,68 @@ int get_score(int difficulty, int index)
   return scores[difficulty][index];
 }
 
-char buff[20];
+char buff[14] =  {'i',':',' ','a','a','a',' ','-', '-', '-','-', '-', '-', 0x00};
 char* get_highscore(int difficulty, int index)
 {
     int i;
+    buff[0] = (char)(index + 49);
+    buff[3] = names[difficulty][0][0];
+    buff[4] = names[difficulty][0][1];
+    buff[5] = names[difficulty][0][2];
 
-    snprintf(buff, 12, "%d: %s %d", index+1, names[difficulty][index], scores[difficulty][index]);
+    int score = scores[difficulty][index];
+
+    if(score / 100000)
+      buff[7] = (char)((score/100000) + 48);
+    else
+      buff[7] = '0';
+
+    score %= 100000;
+
+    if(score / 10000)
+      buff[8] = (char)((score/10000) + 48);
+    else
+      buff[8] = '0';
+
+    score %= 10000;
+
+    if(score / 1000)
+        buff[9] = (char)((score/1000) + 48);
+      else
+        buff[9] = '0';
+
+    score %= 1000;
+
+    if(score / 100)
+        buff[10] = (char)((score/100) + 48);
+      else
+        buff[10] = '0';
+
+    score %= 100;
+
+    if(score / 10)
+        buff[11] = (char)((score/10) + 48);
+      else
+        buff[11] = '0';
+
+    score %= 10;
+
+
+    buff[12] = (char)((score) + 48);
+
+
 
     return buff;
 }
 
-int main()
+/*int main()
 {
 
     add_highscore("roc", 100, 0);
     add_highscore("aaa", 90, 0);
     add_highscore("aba", 95, 0);
     add_highscore("abc", 90, 0);
-    add_highscore("knu", 1000, 0);
+    add_highscore("knu", 123456, 0);
 
     for(int i = 0; i < 9; i++)
       printf("N: %s | S: %d\n", names[0][i], scores[0][i]);
@@ -72,7 +116,7 @@ int main()
     printf("%s\n", get_highscore(0, 0));
 
   return 0;
-}
+}*/
 
 /*int main()
 {
