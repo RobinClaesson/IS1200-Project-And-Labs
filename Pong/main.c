@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
@@ -71,6 +72,7 @@ void menu_down();
 
 void update_highscore();
 void update_chooseDiff();
+void update_displayWinner();
 
 //-----------------------------------------------
 //Global Variables
@@ -83,7 +85,10 @@ double ballAngle = 0;
 struct Rectangle player1;
 struct Rectangle player2;
 
-enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff}gameState, menuState;
+enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff, DisplayWinner}gameState, menuState;
+
+bool PlayingVsAI = false;
+
 
 
 int score_p1, score_p2;
@@ -206,6 +211,10 @@ void update(){
       case ChooseDiff:
       update_chooseDiff();
       break;
+
+      case DisplayWinner:
+      update_displayWinner();
+      break;
     }
     draw();
   }
@@ -259,7 +268,7 @@ void player_score(int* score)
     display_score(score_p1, score_p2);
 
     if((*score) > 3)
-      resetGame();
+      gameState = DisplayWinner;
 }
 
 //Control player 1
@@ -332,6 +341,7 @@ void update_chooseDiff(){
 
   else if(btn1_pressed())
   {
+    PlayingVsAI = true;
     gameState = VsAI;
   }
 
@@ -343,6 +353,36 @@ void update_chooseDiff(){
 }
 void update_highscore(){
 
+}
+
+void update_displayWinner(){
+  char* winner = "----------------";
+
+  //checks Who won
+  if (score_p1 > score_p2)
+    winner = "Player1";
+  else
+    winner = "Player2";
+
+  if (PlayingVsAI == true & winner == "Player2")
+    winner = "AI";
+
+// This is the "win" screen
+  display_string(0, "");
+  display_string(1, winner);
+  display_string(2, "Wins !");
+  display_string(3, "");
+
+// Changes gameState if a button is pressed
+  if (btn1_pressed() | btn2_pressed() |
+      btn3_pressed() | btn4_pressed()){
+    if (PlayingVsAI = true){
+      gameState = Menu;
+    } else {
+      resetGame();
+      gameState = Menu;
+    }
+  }
 }
 
 //-----------------------------------------------

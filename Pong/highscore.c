@@ -10,7 +10,7 @@ struct Node{
 
 }heads[3];
 
-
+/*
 void add_highscore(char* name, int seconds, int difficulty)
 {
     struct Node head = heads[difficulty];
@@ -19,3 +19,4 @@ void add_highscore(char* name, int seconds, int difficulty)
 
     }
 }
+*/
