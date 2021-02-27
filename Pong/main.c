@@ -206,7 +206,6 @@ void update(){
       update_chooseDiff();
       break;
     }
-
     draw();
   }
 }
@@ -255,6 +254,8 @@ void player_score(int* score)
     resetPlayers();
 
     (*score)++;
+
+    display_score(score_p1, score_p2);
 
     if((*score) > 3)
       resetGame();
@@ -385,15 +386,15 @@ void display_menu()
   display_string(0,"------Pong------");
 //PvP
   if(menuState == 0)
-    display_string(1, "PvE <--");
+    display_string(1, "PvP <--");
   else
-    display_string(1, "PvE");
+    display_string(1, "PvP");
 
   //PvE
   if(menuState == 1)
-    display_string(2, "PvP <--");
+    display_string(2, "PvE <--");
   else
-    display_string(2, "PvP");
+    display_string(2, "PvE");
 
   //Highscore
   if(menuState == 2)

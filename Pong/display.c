@@ -249,7 +249,6 @@ void display_pixel (int x, int y){
     framebuffer[y/8][x] |= (1 << byteindex);
 }
 
-
 void clear_buffer(){
 	int i, j;
 
@@ -294,5 +293,23 @@ void display_update(int gameState) {
 
 void led_init()
 {
+	TRISE &= 0xfffff00;
+  PORTE &= 0xfffff00;
+}
 
+void display_score(int score_p1, int score_p2){
+
+	int dscore1 = 0x1;
+	int dscore2 = 0x1;
+	int i, j;
+
+	for (i = 0; i <= score_p1; i++){
+		PORTESET = dscore1;
+		dscore1 << 0x1;
+	}
+/*
+	for (j = 0; j <= score_p2; j++){
+		PORTE |= dscore2;
+		dscore2 << 1;
+	}*/
 }
