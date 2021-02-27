@@ -1,21 +1,63 @@
-#include <pic32mx.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+char* names[3][9] = {{"---", "---", "---", "---", "---", "---", "---", "---", "---",},
+                     {"---", "---", "---", "---", "---", "---", "---", "---", "---",},
+                     {"---", "---", "---", "---", "---", "---", "---", "---", "---",}};
 
 
-struct Node{
+int scores[3][9] = {{0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-    char* name;
-    int score;
-    struct Node* next;
-
-}heads[3];
-
-
-void add_highscore(char* name, int seconds, int difficulty)
+//Ads a HighScore to the lists
+void add_highscore(char* name, int score, int difficulty)
 {
-    struct Node head = heads[difficulty];
-    if(head == NULL)
-    {
+    int i, j;
 
+    for(i = 0; i < 9; i++)
+    {
+      if(score > scores[difficulty][i])
+      {
+          for(j = 8; j > i; j--)
+          {
+            names[difficulty][j] = names[difficulty][j-1];
+            scores[difficulty][j] = scores[difficulty][j-1];
+          }
+
+          names[difficulty][i] = name;
+          scores[difficulty][i] = score;
+
+          break;
+      }
     }
 }
+
+//Returns name of highscore holder
+char* get_name(int difficulty, int index)
+{
+  return names[difficulty][index];
+}
+//Returns score of highscore holder
+int get_score(int difficulty, int index)
+{
+  return scores[difficulty][index];
+}
+
+/*int main()
+{
+
+    add_highscore("roc", 100, 0);
+    add_highscore("aaa", 90, 0);
+    add_highscore("aba", 95, 0);
+    add_highscore("abc", 90, 0);
+    add_highscore("knu", 1000, 0);
+
+    for(int i = 0; i < 9; i++)
+      printf("N: %s | S: %d\n", names[0][i], scores[0][i]);
+
+    printf("På plats 3: %s, %d\n", get_name(0, 3), get_score(0,3));
+
+  return 0;
+}*/
