@@ -311,7 +311,7 @@ void display_score(int score_p1, int score_p2){
 	}
 
 	for (j = 0; j < score_p2; j++){
-		PORTE |= dscore2;
+		PORTESET = dscore2;
 		dscore2 = dscore2/2;
 	}
 }

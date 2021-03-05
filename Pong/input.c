@@ -99,7 +99,7 @@ int swt1_toggl()//Toggled on
 //Switch 2
 int swt2_on() //Is on
 {
-    return swt_state & 0x1;
+    return swt_state & 0x2;
 }
 int swt2_toggl()//Toggled on
 {
@@ -109,7 +109,7 @@ int swt2_toggl()//Toggled on
 //Switch 3
 int swt3_on() //Is on
 {
-    return swt_state & 0x1;
+    return swt_state & 0x4;
 }
 int swt3_toggl()//Toggled on
 {
@@ -119,9 +119,9 @@ int swt3_toggl()//Toggled on
 //Switch 4
 int swt4_on() //Is on
 {
-    return swt_state & 0x1;
+    return swt_state & 0x8;
 }
 int swt4_toggl()//Toggled on
 {
-    return (swt_state & 0x4) && (~old_swt_state & 0x4);
+    return (swt_state & 0x8) && (~old_swt_state & 0x8);
 }

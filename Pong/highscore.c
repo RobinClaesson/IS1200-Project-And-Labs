@@ -45,7 +45,7 @@ int get_score(int difficulty, int index)
   return scores[difficulty][index];
 }
 
-char buff[14] =  {'i',':',' ','a','a','a',' ','-', '-', '-','-', '-', '-', 0x00};
+char buff[13] =  {'i',':',' ','a','a','a',' ', '-', '-','-', '-', '-', 0x00};
 char* get_highscore(int difficulty, int index)
 {
     int i;
@@ -56,45 +56,19 @@ char* get_highscore(int difficulty, int index)
 
     int score = scores[difficulty][index];
 
-    if(score / 100000)
-      buff[7] = (char)((score/100000) + 48);
-    else
-      buff[7] = '0';
-
-    score %= 100000;
-
-    if(score / 10000)
-      buff[8] = (char)((score/10000) + 48);
-    else
-      buff[8] = '0';
-
+    buff[7] = (char)((score/10000) + 48);
     score %= 10000;
 
-    if(score / 1000)
-        buff[9] = (char)((score/1000) + 48);
-      else
-        buff[9] = '0';
-
+    buff[8] = (char)((score/1000) + 48);
     score %= 1000;
 
-    if(score / 100)
-        buff[10] = (char)((score/100) + 48);
-      else
-        buff[10] = '0';
-
+    buff[9] = (char)((score/100) + 48);
     score %= 100;
 
-    if(score / 10)
-        buff[11] = (char)((score/10) + 48);
-      else
-        buff[11] = '0';
-
+    buff[10] = (char)((score/10) + 48);
     score %= 10;
 
-
-    buff[12] = (char)((score) + 48);
-
+    buff[11] = (char)((score) + 48);
 
     return buff;
 }
-
