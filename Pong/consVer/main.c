@@ -150,9 +150,39 @@ void update(){
     switch(gameState){
 
       case VsHuman:
+      if(input == 'q'){
+        ball.pos.x = 10;
+        ball.pos.y = 0;
+
+        ballAngle = PI/2;
+        ballAngle += PI/10;
+      }
+      else if(input == 'e'){
+        ball.pos.x = 10;
+        ball.pos.y = screenSize.y-3;
+
+        ballAngle = 3*PI/2;
+        ballAngle -= PI/10;
+      }
+      else if(input == 'r'){
+        ball.pos.x = screenSize.x - 10;
+        ball.pos.y = 0;
+
+        ballAngle = PI/2;
+        ballAngle -= PI/10;
+      }
+      else if(input == 't'){
+        ball.pos.x = screenSize.x -10;
+        ball.pos.y = screenSize.y-3;
+
+        ballAngle = 3*PI/2;
+        ballAngle += PI/10;
+      }
+      else{
       update_ball();
       update_player1();
       update_player2();
+    }
 
       break;
 
@@ -188,14 +218,38 @@ void update_ball(){
 
   //Ball player1 collision
   if(collisionRR(player1, ball)){
-      ballPaddleAngle(player1);
-      ball.pos.x  = rectRight(player1);
+
+      //Check if we collide wit the top or bottom of the pedal
+      struct Rectangle top = createRect(0, 0, player1.pos.x, player1.pos.y);
+      struct Rectangle bot = createRect(0, rectBot(player1), player1.pos.x, screenSize.y - rectBot(player1));
+
+      if(collisionRR(top, ball) || collisionRR(bot, ball))
+        setBallAngle(ballAngle-PI);
+
+      //otherwise we collide with the side
+      else
+      {
+        ballPaddleAngle(player1);
+        ball.pos.x  = rectRight(player1);
+      }
   }
 
   //Ball player2 collision
   else if(collisionRR(player2, ball)){
+
+    //Check if we collide wit the top or bottom of the pedal
+    struct Rectangle top = createRect(rectRight(player2), 0, 5, player2.pos.y);
+    struct Rectangle bot = createRect(rectRight(player2), rectBot(player2), 5, screenSize.y - rectBot(player2));
+
+    if(collisionRR(top, ball) || collisionRR(bot, ball))
+      setBallAngle(ballAngle-PI);
+
+    //otherwise we collide with the side
+    else
+    {
       ballPaddleAngle(player2);
       ball.pos.x = player2.pos.x - ball.size.x;
+    }
   }
 
   //Ball bot/top collisionRP
@@ -381,11 +435,13 @@ int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
       return 0;
 
     //if rect 1 is below rect2
-    else if(rect1.pos.y >  rectBot(rect2))
+    else if(rect1.pos.y > rectBot(rect2))
       return 0;
 
     return 1;
 }
+
+
 
 //Returns the y coardnate for the bottom of the rectangle
 int rectBot(struct Rectangle rect)
@@ -446,7 +502,7 @@ void ballPaddleAngle(struct Rectangle player){
   double offset = (PI/3)*(dist/player.size.y); //Max offset * percentage distance from middle
 
   //The offset have different sign for the two players
-  if(ball.pos.x > player.pos.x)
+  if(player.pos.x < screenSize.x/2)
     offset *= -1;
 
   setBallAngle(ballAngle + offset);
