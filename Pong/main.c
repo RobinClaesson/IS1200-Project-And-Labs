@@ -724,6 +724,7 @@ void menu_down()
 
 void choose_name(){
   static int i = 0;
+  //name = "aaa";
 
   if (btn1_pressed()){
     if (i >= 2) {
@@ -741,7 +742,7 @@ void choose_name(){
 
   if (btn3_pressed()){
     if (name[i] < 0x7a) {
-      name[i]--;
+      name[i]++;
     } else
       name[i] = 0x61;
   }
