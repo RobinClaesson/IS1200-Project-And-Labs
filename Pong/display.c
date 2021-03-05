@@ -19,7 +19,7 @@
 
 char textbuffer[4][16];
 uint8_t framebuffer[4][128];
-
+// FROM LAB 3
 static const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -150,19 +150,19 @@ static const uint8_t const font[] = {
 	0, 0, 4, 2, 4, 2, 0, 0,
 	0, 120, 68, 66, 68, 120, 0, 0,
 };
-
+// FROM LAB 3
 void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
 }
-
+// FROM LAB 3
 uint8_t spi_send_recv(uint8_t data) {
 	while(!(SPI2STAT & 0x08));
 	SPI2BUF = data;
 	while(!(SPI2STAT & 0x01));
 	return SPI2BUF;
 }
-
+// FROM LAB 3
 void display_init() {
   /* Set up peripheral bus clock */
   OSCCON &= ~0x180000;
@@ -226,7 +226,7 @@ void display_init() {
 
 	spi_send_recv(0xAF);
 }
-
+// FROM LAB 3
 void display_string(int line, char *s) {
 	int i;
 	if(line < 0 || line >= 4)
@@ -242,13 +242,14 @@ void display_string(int line, char *s) {
 			textbuffer[line][i] = ' ';
 }
 
-//draw a point
+// draw a point
 void display_pixel (int x, int y){
     int byteindex = y%8;
 
     framebuffer[y/8][x] |= (1 << byteindex);
 }
 
+// Clears the framebuffer
 void clear_buffer(){
 	int i, j;
 
@@ -259,6 +260,7 @@ void clear_buffer(){
 	}
 }
 
+// FROM LAB 3, changed by Lewi
 void display_update(int gameState) {
 	int i, j, k;
 	int c;
