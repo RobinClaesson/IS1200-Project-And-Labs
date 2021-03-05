@@ -99,7 +99,6 @@ int score_p1, score_p2;
 int ai_diff = 0, ai_tick = 0;
 
 int highscore_view = 0;
-
 int new_highscore = 100000;
 
 //-----------------------------------------------
@@ -123,12 +122,6 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   game_init();
   timer_init();
   led_init();
-
-  add_highscore("nea", 19999, 1);
-  add_highscore("aea", 19999, 2);
-  add_highscore("nsa", 19999, 1);
-  add_highscore("nes", 19999, 0);
-
 
   while(1);
 
@@ -238,6 +231,7 @@ void update(){
       display_string(2, name);
       break;
     }
+
     draw();
   }
 }
@@ -249,14 +243,38 @@ void update_ball(){
 
   //Ball player1 collision
   if(collisionRR(player1, ball)){
-      ballPaddleAngle(player1);
-      ball.pos.x  = rectRight(player1);
+
+      //Check if we collide wit the top or bottom of the pedal
+      struct Rectangle top = createRect(0, 0, player1.pos.x, player1.pos.y);
+      struct Rectangle bot = createRect(0, rectBot(player1), player1.pos.x, screenSize.y - rectBot(player1));
+
+      if(collisionRR(top, ball) || collisionRR(bot, ball))
+        setBallAngle(ballAngle-PI);
+
+      //otherwise we collide with the side
+      else
+      {
+        ballPaddleAngle(player1);
+        ball.pos.x  = rectRight(player1);
+      }
   }
 
   //Ball player2 collision
   else if(collisionRR(player2, ball)){
+
+    //Check if we collide wit the top or bottom of the pedal
+    struct Rectangle top = createRect(rectRight(player2), 0, 5, player2.pos.y);
+    struct Rectangle bot = createRect(rectRight(player2), rectBot(player2), 5, screenSize.y - rectBot(player2));
+
+    if(collisionRR(top, ball) || collisionRR(bot, ball))
+      setBallAngle(ballAngle-PI);
+
+    //otherwise we collide with the side
+    else
+    {
       ballPaddleAngle(player2);
       ball.pos.x = player2.pos.x - ball.size.x;
+    }
   }
 
   //Ball bot/top collisionRP
@@ -339,23 +357,16 @@ void update_menu(){
     menu_down();
   else if(btn1_pressed())
   {
-
-    if (menuState == VsHuman)
-    {
-      resetGame();
-      playingVsAI = false;
-      gameState = VsHuman;
-    } else if (menuState == VsAI)
-    {
-      resetGame();
-      new_highscore = 100000;
-      playingVsAI = true;
-      gameState = ChooseDiff;
-    } else
-    {
-      showHighscore = true;
+  //Checks if the player is choosing "VsAI"
+    if(menuState == 1 || menuState ==2){
+      if (menuState == 2)
+        showHighscore = true;
       gameState = ChooseDiff;
     }
+    else
+      gameState = menuState;
+
+
   }
 }
 
@@ -378,6 +389,7 @@ void update_chooseDiff(){
     if (showHighscore == true){
       gameState = Highscore;
     } else {
+      playingVsAI = true;
       gameState = VsAI;
     }
   }
@@ -385,7 +397,6 @@ void update_chooseDiff(){
   else if(btn2_pressed())
   {
     showHighscore = false;
-
     gameState = Menu;
   }
 
@@ -434,15 +445,9 @@ void update_displayWinner(){
   if (btn1_pressed() | btn2_pressed() |
       btn3_pressed() | btn4_pressed()){
     if (playingVsAI == true){
-
-      if (score_p1 > score_p2)
-        gameState = InputName;
-      else {
-        gameState = Menu;
-      }
-
+      resetGame();
       playingVsAI = false;
-
+      gameState = InputName;
     } else {
       resetGame();
       gameState = Menu;
@@ -583,23 +588,23 @@ int collisionRP(struct Rectangle rect, struct Point point){
 
 //Return 1 if Rectangle and Rectangle intersect
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
-    //If rect1 is to the right of rect2
-    if(rect1.pos.x > rectRight(rect2))
-      return 0;
+  //If rect1 is to the right of rect2
+  if(rect1.pos.x > rectRight(rect2))
+    return 0;
 
-    //if rect1 is to the left of rect2
-    else if(rect2.pos.x > rectRight(rect1))
-      return 0;
+  //if rect1 is to the left of rect2
+  else if(rect2.pos.x > rectRight(rect1))
+    return 0;
 
-    //if rect1 is above rect2
-    else if(rectBot(rect1) < rect2.pos.y)
-      return 0;
+  //if rect1 is above rect2
+  else if(rectBot(rect1) < rect2.pos.y)
+    return 0;
 
-    //if rect 1 is below rect2
-    else if(rect1.pos.y >  rectBot(rect2))
-      return 0;
+  //if rect 1 is below rect2
+  else if(rect1.pos.y > rectBot(rect2))
+    return 0;
 
-    return 1;
+  return 1;
 }
 
 //Returns the y coardnate for the bottom of the rectangle
@@ -658,10 +663,10 @@ void ballPaddleAngle(struct Rectangle player){
   setBallAngle(PI - ballAngle);
 
   double dist = rectCenter(player).y - rectCenter(ball).y;
-  double offset = (PI/3)*(dist/(player.size.y)); //Max offset * percentage distance from middle
+  double offset = (PI/3)*(dist/player.size.y); //Max offset * percentage distance from middle
 
   //The offset have different sign for the two players
-  if(ball.pos.x > player.pos.x)
+  if(player.pos.x < screenSize.x/2)
     offset *= -1;
 
   setBallAngle(ballAngle + offset);
@@ -729,7 +734,9 @@ void choose_name(){
   if (btn1_pressed()){
     if (i >= 2) {
       i = 0;
+
       add_highscore(name, new_highscore, ai_diff);
+      new_highscore = 100000;
 
       gameState = Highscore;
     } else
@@ -749,7 +756,7 @@ void choose_name(){
 
   if (btn4_pressed()){
     if (name[i] > 0x61){
-      name[i]--;
+      name[i]++;
     } else
       name[i] = 0x7a;
   }
