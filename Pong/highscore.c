@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+//Highscore names
 char* names[3][9] = {{"---", "---", "---", "---", "---", "---", "---", "---", "---",},
                      {"---", "---", "---", "---", "---", "---", "---", "---", "---",},
                      {"---", "---", "---", "---", "---", "---", "---", "---", "---",}};
 
-
+//Highscore results
 int scores[3][9] = {{0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0, 0}};
@@ -18,14 +19,18 @@ void add_highscore(char* name, int score, int difficulty)
 
     for(i = 0; i < 9; i++)
     {
+      //Searches from the top for the first score we beat
       if(score > scores[difficulty][i])
       {
+          //Starts at the bottom and goes to the found index
+          //coying the score and name of the next person on the list
           for(j = 8; j > i; j--)
           {
             names[difficulty][j] = names[difficulty][j-1];
             scores[difficulty][j] = scores[difficulty][j-1];
           }
 
+          //Places the new score
           names[difficulty][i] = name;
           scores[difficulty][i] = score;
 
@@ -45,7 +50,9 @@ int get_score(int difficulty, int index)
   return scores[difficulty][index];
 }
 
+
 char buff[13] =  {'i',':',' ','a','a','a',' ', '-', '-','-', '-', '-', 0x00};
+//Returns a string with the placing, name and score of a higchscore
 char* get_highscore(int difficulty, int index)
 {
     int i;
