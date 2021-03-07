@@ -49,6 +49,7 @@ void update();
 void update_ball();
 void setBallAngle(double angle);
 void ballPaddleAngle(struct Rectangle rect);
+int ballMovingLeft();
 
 //Player updates
 void update_player1();
@@ -252,7 +253,7 @@ void update_ball(){
 
 
   //Ball player1 collision
-  if(collisionRR(player1, ball)){
+  if(collisionRR(player1, ball) && ballMovingLeft()){
 
       //Check if we collide wit the top or bottom of the pedal
       struct Rectangle top = createRect(0, 0, player1.pos.x, player1.pos.y);
@@ -260,14 +261,14 @@ void update_ball(){
 
       if(collisionRR(top, ball))
       {
-        setBallAngle(ballAngle - PI);
+        setBallAngle(5*PI/3);
         ball.pos.y = player1.pos.y - ball.size.y;
         ball.pos.x = player1.pos.x;
       }
 
       else if (collisionRR(bot, ball))
       {
-        setBallAngle(ballAngle - PI);
+        setBallAngle(PI/3);
         ball.pos.y = rectBot(player1);
         ball.pos.x = player1.pos.x;
       }
@@ -281,7 +282,7 @@ void update_ball(){
   }
 
   //Ball player2 collision
-  else if(collisionRR(player2, ball)){
+  else if(collisionRR(player2, ball) && !ballMovingLeft()){
 
     //Check if we collide wit the top or bottom of the pedal
     struct Rectangle top = createRect(rectRight(player2), 0, 5, player2.pos.y);
@@ -289,14 +290,14 @@ void update_ball(){
 
     if(collisionRR(top, ball))
     {
-      setBallAngle(ballAngle-PI);
+      setBallAngle(4*PI/3);
       ball.pos.y = player2.pos.y - ball.size.y;
       ball.pos.x = player2.pos.x + player2.size.x - ball.size.x;
     }
 
     else if (collisionRR(bot, ball))
     {
-      setBallAngle(ballAngle-PI);
+      setBallAngle(2*PI/3);
       ball.pos.y = rectBot(player2);
       ball.pos.x = player2.pos.x + player2.size.x - ball.size.x;
     }
@@ -365,7 +366,7 @@ void update_player2 (){
 }
 
 void update_AI(){
-  if ( ballAngle < PI/2 || ballAngle > 3*PI/2)
+  if (!ballMovingLeft())
   {
     ai_tick++;
     if(ai_tick >= 4 - ai_diff)
@@ -770,6 +771,11 @@ void ballPaddleAngle(struct Rectangle player){
   else if(ballAngle < 5*PI/3 && ballAngle > 3*PI/2)
       ballAngle = 5*PI/3;
 
+}
+
+int ballMovingLeft()
+{
+  return (ballAngle > PI/2) && (ballAngle < 3*PI/2);
 }
 
 //-----------------------------------------------
