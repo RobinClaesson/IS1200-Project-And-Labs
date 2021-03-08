@@ -126,19 +126,6 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   timer_init();
   led_init();
 
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-  add_highscore("bca", 99999, 0);
-
-
   return 0;
 }
 
