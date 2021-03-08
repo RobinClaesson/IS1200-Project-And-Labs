@@ -126,21 +126,34 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
   timer_init();
   led_init();
 
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+  add_highscore("bca", 99999, 0);
+
+
   return 0;
 }
 
 void resetGame(){
-  resetPlayers();
-  resetBall();
-
   score_p1 = 0;
   score_p2 = 0;
+
+  resetPlayers();
+  resetBall();
 }
 
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
   if (score_p1 > score_p2)
-    ballAngle = -PI;
+    ballAngle = 0;
   else
     ballAngle = PI;
 }
@@ -213,7 +226,16 @@ void update(){
       case VsAI:
       if (!swt1_on())
       {
-        update_ball();
+        if (swt4_on())
+        {
+          ball.pos.x = 127;
+          ball.pos.y = 0;
+
+          ballAngle = 0;
+        } else {
+          update_ball();
+        }
+        
         update_player1();
         update_AI();
 
@@ -332,10 +354,10 @@ void update_ball(){
 
 void player_score(int* score)
 {
+    (*score)++;
+
     resetBall();
     resetPlayers();
-
-    (*score)++;
 
     display_score(score_p1, score_p2);
 
@@ -505,7 +527,7 @@ void update_displayWinner(){
     led_reset();
     if (playingVsAI){
 
-      if (score_p1 > score_p2)
+      if (score_p1 > score_p2 && score_p1 > get_score(ai_diff, 8))
         gameState = InputName;
       else {
         gameState = Menu;
