@@ -293,29 +293,35 @@ void display_update(int gameState) {
 	}
 }
 
+//led Initialize
 void led_init()
 {
 	TRISE &= 0xfffff00;
   PORTE &= 0xfffff00;
 }
 
+//Shows the match score on the leds
 void display_score(int score_p1, int score_p2){
 
+	//Midle two lights
 	int dscore1 = 0x10;
 	int dscore2 = 0x8;
 	int i, j;
 
+	//Turns on the light then moves to the left for every point p1 have
 	for (i = 0; i < score_p1; i++){
 		PORTESET = dscore1;
 		dscore1 *= 2;
 	}
 
+	//Turns on the light then moves to the right for every point p2 have
 	for (j = 0; j < score_p2; j++){
 		PORTESET = dscore2;
 		dscore2 = dscore2/2;
 	}
 }
 
+//Turns of leds
 void led_reset(){
 	PORTECLR = 0xFF;
 }

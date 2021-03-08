@@ -107,6 +107,7 @@ int new_highscore = 100000;
 //-----------------------------------------------
 //Main / Init / Resets
 //-----------------------------------------------
+//Startup Entrypoint
 int main(void) {
 
   /* FROM LAB 3
@@ -137,6 +138,8 @@ void resetGame(){
   resetBall();
 }
 
+//Resets the ball to the center of the screen
+//with the angle towards the loosing player (Player 1 if tie)
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
 
@@ -146,17 +149,20 @@ void resetBall(){
     ballAngle = 0;
 }
 
+//Resets the players to the middle of the screen
 void resetPlayers(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
   player2 = createRect(screenSize.x - 3, screenSize.y/2 - 3, 1, 6);
 }
 
+//Game Initialize
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
   gameState = Menu;
   menuState = VsHuman;
 }
 
+//Timer Initialize
 void timer_init(){
   // timer 2 clear
   T2CON = 0x0;
@@ -183,25 +189,29 @@ void timer_init(){
 //-----------------------------------------------
 //Update functions
 //-----------------------------------------------
+//Main update function that gets called at interupt
 void update(){
 
   if (IFS(0) & 0x100){
     //reset interrupt flag
     IFS(0) &= 0xfffffeff;
+
     update_input();
 
     switch(gameState){
 
       case VsHuman:
-      if (!swt1_on())
+      if (!swt1_on()) //Pause
       {
-        if (swt4_on())
+        if (swt4_on()) //For debugging
         {
           ball.pos.x = 9;
           ball.pos.y = 0;
 
           ballAngle = 2*PI/3;
-        } else {
+        }
+
+        else {
           update_ball();
         }
 
@@ -212,9 +222,9 @@ void update(){
       break;
 
       case VsAI:
-      if (!swt1_on())
+      if (!swt1_on()) //Pause
       {
-        if (swt4_on())
+        if (swt4_on()) //For debugging
         {
           ball.pos.x = 124;
           ball.pos.y = 0;
@@ -257,6 +267,7 @@ void update(){
   }
 }
 
+//Updates ballpossition and checks for collsions
 void update_ball(){
   ball.pos.x += cos(ballAngle);
   ball.pos.y += sin(ballAngle);
@@ -269,13 +280,14 @@ void update_ball(){
       struct Rectangle top = createRect(0, 0, player1.pos.x, player1.pos.y);
       struct Rectangle bot = createRect(0, rectBot(player1), player1.pos.x, screenSize.y - rectBot(player1));
 
+      //Collision with top
       if(collisionRR(top, ball))
       {
         setBallAngle(5*PI/3);
         ball.pos.y = player1.pos.y - ball.size.y;
         ball.pos.x = player1.pos.x;
       }
-
+      //Collision with bot
       else if (collisionRR(bot, ball))
       {
         setBallAngle(PI/3);
@@ -297,14 +309,14 @@ void update_ball(){
     //Check if we collide wit the top or bottom of the pedal
     struct Rectangle top = createRect(rectRight(player2), 0, 5, player2.pos.y);
     struct Rectangle bot = createRect(rectRight(player2), rectBot(player2), 5, screenSize.y - rectBot(player2));
-
+    //Collision with top
     if(collisionRR(top, ball))
     {
       setBallAngle(4*PI/3);
       ball.pos.y = player2.pos.y - ball.size.y;
       ball.pos.x = player2.pos.x + player2.size.x - ball.size.x;
     }
-
+    //Collision with bot
     else if (collisionRR(bot, ball))
     {
       setBallAngle(2*PI/3);
@@ -340,6 +352,7 @@ void update_ball(){
     player_score(&score_p1);
 }
 
+//Gets called when a player scores with a pointer to that players current score
 void player_score(int* score)
 {
     (*score)++;
@@ -349,6 +362,7 @@ void player_score(int* score)
 
     display_score(score_p1, score_p2);
 
+    //Someome wins
     if((*score) > 3)
       gameState = DisplayWinner;
 }
@@ -375,14 +389,20 @@ void update_player2 (){
   }
 }
 
+//AI Update function
 void update_AI(){
+  //The AI only updates when the ball moves towards it
   if (!ballMovingLeft())
   {
+    //Updates AI every (4- Difficulty) updates
     ai_tick++;
     if(ai_tick >= 4 - ai_diff)
     {
       ai_tick = 0;
+
+      //AI moves up if the ball is over and down if the ball is under
       double dist = rectCenter(player2).y - rectCenter(ball).y;
+
       if(dist > player2.size.y/2)
         moveUp(&player2);
       else if(dist < -player2.size.y/2)
@@ -394,25 +414,31 @@ void update_AI(){
 //Update menu
 void update_menu(){
 
+  //Press = First update button is down
   if(btn4_pressed())
     menu_up();
   else if(btn3_pressed())
     menu_down();
+
+  //Enter selected gamemode
   else if(btn1_pressed())
   {
-
     if (menuState == VsHuman)
     {
       resetGame();
       playingVsAI = false;
       gameState = VsHuman;
-    } else if (menuState == VsAI)
+    }
+
+     else if (menuState == VsAI)
     {
       resetGame();
       new_highscore = 100000;
       playingVsAI = true;
       gameState = ChooseDiff;
-    } else
+    }
+
+    else //HighScore
     {
       showHighscore = true;
       gameState = ChooseDiff;
@@ -420,39 +446,55 @@ void update_menu(){
   }
 }
 
-
+//Update function for choosing difficulty
+//Used both for highscore and playing vs AI
 void update_chooseDiff(){
+
+  //Difficulty menu up with wrap around
   if(btn4_pressed()){
     ai_diff--;
+
     if( ai_diff < 0)
       ai_diff = 2;
   }
 
+  //Difficulty menu down with wrap around
   else if(btn3_pressed()){
     ai_diff++;
     if( ai_diff > 2)
       ai_diff = 0;
   }
 
+  //Select difficulty
   else if(btn1_pressed())
   {
+    //Show highcscoe
     if (showHighscore){
       highscore_view = 0;
       gameState = Highscore;
-    } else {
+    }
+
+    //Play vs AI
+    else {
       gameState = VsAI;
     }
+
   }
 
+  //Back to main menu
   else if(btn2_pressed())
   {
     showHighscore = false;
-
     gameState = Menu;
   }
 
 }
+
+//Update function for viewing highscores
+//Cycles trough 3 highscore index per side, 0-2, 3-5, 6-8
 void update_highscore(){
+
+  //Up in highscores with wrap around
   if(btn4_pressed()){
     highscore_view -= 3;
 
@@ -460,6 +502,7 @@ void update_highscore(){
     highscore_view = 6;
   }
 
+  //Up in highscores with wrap around
   else if(btn3_pressed()){
     highscore_view += 3;
 
@@ -467,6 +510,7 @@ void update_highscore(){
     highscore_view = 0;
   }
 
+  //Back to main menu
   else if(btn2_pressed())
   {
     showHighscore = false;
@@ -474,10 +518,12 @@ void update_highscore(){
   }
 }
 
+//Update function for entering your name for the highscores
 void choose_name(){
   static int i = 0;
   //name = "aaa";
 
+  //Go to next letter or confirming your name
   if (btn1_pressed()){
     if (i >= 2) {
       i = 0;
@@ -485,13 +531,16 @@ void choose_name(){
 
       gameState = Highscore;
     } else
+
       i++;
   }
 
+  //Previus letter
   if (btn2_pressed())
     if (i > 0)
       i--;
 
+  //Current letter down with wrap around
   if (btn3_pressed()){
     if (name[i] < 0x7a) {
       name[i]++;
@@ -499,6 +548,7 @@ void choose_name(){
       name[i] = 0x61;
   }
 
+  //Current letter up with wrap around
   if (btn4_pressed()){
     if (name[i] > 0x61){
       name[i]--;
@@ -507,20 +557,26 @@ void choose_name(){
   }
 }
 
+//Update function for displaying who won the match
 void update_displayWinner(){
+
 // Changes gameState if a button is pressed
   if (btn1_pressed() | btn2_pressed() |
       btn3_pressed() | btn4_pressed()){
 
     led_reset();
-    if (playingVsAI){
 
-      if (score_p1 > score_p2 && score_p1 > get_score(ai_diff, 8))
-        gameState = InputName;
+    if (playingVsAI){
+      //Checking if we should add new highcscoe
+      if (score_p1 > score_p2  && score_p1 > get_score(ai_diff, 8))
+        gameState = InputName; //New highscore
+
       else {
         gameState = Menu;
       }
-    } else {
+    }
+
+    else {
       gameState = Menu;
     }
   }
@@ -530,10 +586,11 @@ void update_displayWinner(){
 //Draw - Functions
 //-----------------------------------------------
 
-//Main Draw function
+//Main Draw function, called at the end of every update
 void draw(){
 
   switch(gameState){
+    //Displays the game
     case VsHuman:
     case VsAI:
       clear_buffer();
@@ -569,7 +626,7 @@ void draw(){
   display_update(gameState);
 }
 
-//Draw a filled rectangle
+//Draw a filled rectangle on the screen buffer
 void display_rectangle(struct Rectangle rect){
   int i, j;
 
@@ -604,6 +661,7 @@ void display_menu()
 
 }
 
+//Displays on the screen who have won the game
 void displayWinner()
 {
   char* winner = "----------------";
@@ -624,6 +682,7 @@ void displayWinner()
   display_string(3, "");
 }
 
+//Displays the menu for selection difficulty
 void display_chooseDiff()
 {
     display_string(0,"---Difficulty---");
@@ -646,6 +705,7 @@ void display_chooseDiff()
 
 }
 
+//Displays highscores, 3 indexes at the time
 void display_highscore()
 {
     display_string(0, "---Highscores---");
@@ -685,6 +745,7 @@ struct Rectangle createRect(int x, int y, int width, int height){
 //
 //   else return 0;
 // }
+
 
 //Return 1 if Rectangle and Rectangle intersect
 int collisionRR(struct Rectangle rect1, struct Rectangle rect2){
@@ -791,6 +852,7 @@ int ballMovingLeft()
 //-----------------------------------------------
 // Menu Functions
 //-----------------------------------------------
+//Moves menu up with wrap around
 void menu_up()
 {
   switch (menuState)
@@ -812,6 +874,7 @@ void menu_up()
   }
 }
 
+//Moves menu down with wrap around
 void menu_down()
 {
   switch (menuState)

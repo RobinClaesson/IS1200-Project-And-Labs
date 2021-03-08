@@ -50,6 +50,7 @@ void update();
 void update_ball();
 void setBallAngle(double angle);
 void ballPaddleAngle(struct Rectangle rect);
+int ballMovingLeft();
 
 //Player updates
 void update_player1();
@@ -96,6 +97,8 @@ enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff}gameState, menuState;
 
 int score_p1, score_p2;
 
+int playingVsAI = 0;
+
 int ai_diff = 0, ai_tick = 0;
 
 char input;
@@ -107,7 +110,7 @@ int main(void) {
 
   game_init();
 
-
+  resetGame();
   update();
   return 0;
 }
@@ -121,25 +124,29 @@ void resetGame(){
   score_p2 = 0;
 }
 
+//Resets the ball to the center of the screen
+//with the angle towards the loosing player (Player 1 if tie)
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  ballAngle = PI;
+  if (score_p1 <= score_p2 || playingVsAI)
+    ballAngle = PI;
+  else
+    ballAngle = 0;
 }
 
-void resetPlayers()
-{
+
+//Resets the players to the middle of the screen
+void resetPlayers(){
   player1 = createRect(3, screenSize.y/2 - 3, 1, 6);
-  player2 = createRect(screenSize.x - 4., screenSize.y/2 - 3, 1, 6);
+  player2 = createRect(screenSize.x - 3, screenSize.y/2 - 3, 1, 6);
 }
 
+//Game Initialize
 void game_init(){
   screenSize = createPoint(128, 32); //128x32 screen size
   gameState = Menu;
   menuState = VsHuman;
-
-  resetGame();
 }
-
 
 
 //-----------------------------------------------
@@ -150,39 +157,12 @@ void update(){
     switch(gameState){
 
       case VsHuman:
-      if(input == 'q'){
-        ball.pos.x = 10;
-        ball.pos.y = 0;
 
-        ballAngle = PI/2;
-        ballAngle += PI/10;
-      }
-      else if(input == 'e'){
-        ball.pos.x = 10;
-        ball.pos.y = screenSize.y-3;
-
-        ballAngle = 3*PI/2;
-        ballAngle -= PI/10;
-      }
-      else if(input == 'r'){
-        ball.pos.x = screenSize.x - 10;
-        ball.pos.y = 0;
-
-        ballAngle = PI/2;
-        ballAngle -= PI/10;
-      }
-      else if(input == 't'){
-        ball.pos.x = screenSize.x -10;
-        ball.pos.y = screenSize.y-3;
-
-        ballAngle = 3*PI/2;
-        ballAngle += PI/10;
-      }
-      else{
       update_ball();
       update_player1();
       update_player2();
-    }
+
+
 
       break;
 
@@ -211,20 +191,33 @@ void update(){
     update();
 }
 
+//Updates ballpossition and checks for collsions
 void update_ball(){
   ball.pos.x += cos(ballAngle);
   ball.pos.y += sin(ballAngle);
 
 
   //Ball player1 collision
-  if(collisionRR(player1, ball)){
-
+  if(collisionRR(player1, ball) && ballMovingLeft()){
+      debug++;
       //Check if we collide wit the top or bottom of the pedal
       struct Rectangle top = createRect(0, 0, player1.pos.x, player1.pos.y);
       struct Rectangle bot = createRect(0, rectBot(player1), player1.pos.x, screenSize.y - rectBot(player1));
 
-      if(collisionRR(top, ball) || collisionRR(bot, ball))
-        setBallAngle(ballAngle-PI);
+      //Collision with top
+      if(collisionRR(top, ball))
+      {
+        setBallAngle(5*PI/3);
+        ball.pos.y = player1.pos.y - ball.size.y;
+        ball.pos.x = player1.pos.x;
+      }
+      //Collision with bot
+      else if (collisionRR(bot, ball))
+      {
+        setBallAngle(PI/3);
+        ball.pos.y = rectBot(player1);
+        ball.pos.x = player1.pos.x;
+      }
 
       //otherwise we collide with the side
       else
@@ -235,15 +228,25 @@ void update_ball(){
   }
 
   //Ball player2 collision
-  else if(collisionRR(player2, ball)){
+  else if(collisionRR(player2, ball) && !ballMovingLeft()){
 
     //Check if we collide wit the top or bottom of the pedal
     struct Rectangle top = createRect(rectRight(player2), 0, 5, player2.pos.y);
     struct Rectangle bot = createRect(rectRight(player2), rectBot(player2), 5, screenSize.y - rectBot(player2));
-
-    if(collisionRR(top, ball) || collisionRR(bot, ball))
-      setBallAngle(ballAngle-PI);
-
+    //Collision with top
+    if(collisionRR(top, ball))
+    {
+      setBallAngle(4*PI/3);
+      ball.pos.y = player2.pos.y - ball.size.y;
+      ball.pos.x = player2.pos.x + player2.size.x - ball.size.x;
+    }
+    //Collision with bot
+    else if (collisionRR(bot, ball))
+    {
+      setBallAngle(2*PI/3);
+      ball.pos.y = rectBot(player2);
+      ball.pos.x = player2.pos.x + player2.size.x - ball.size.x;
+    }
     //otherwise we collide with the side
     else
     {
@@ -273,17 +276,16 @@ void update_ball(){
     player_score(&score_p1);
 }
 
-void player_score(int* player_score)
+void player_score(int* score)
 {
+    (*score)++;
+
     resetBall();
     resetPlayers();
 
-    //display_score(score_p1, score_p2);
 
-    (*player_score)++;
-
-
-    if((*player_score) > 3)
+    //Someome wins
+    if((*score) > 3)
       resetGame();
 }
 
@@ -309,17 +311,25 @@ void update_player2 (){
  }
 }
 
+//AI Update function
 void update_AI(){
-
-  ai_tick++;
-  if(ai_tick >= 4 - ai_diff)
+  //The AI only updates when the ball moves towards it
+  if (!ballMovingLeft())
   {
-    ai_tick = 0;
-    double dist = rectCenter(player2).y - rectCenter(ball).y;
-    if(dist > player2.size.y/2)
-      moveUp(&player2);
-    else if(dist < -player2.size.y/2)
-      moveDown(&player2);
+    //Updates AI every (4- Difficulty) updates
+    ai_tick++;
+    if(ai_tick >= 4 - ai_diff)
+    {
+      ai_tick = 0;
+
+      //AI moves up if the ball is over and down if the ball is under
+      double dist = rectCenter(player2).y - rectCenter(ball).y;
+
+      if(dist > player2.size.y/2)
+        moveUp(&player2);
+      else if(dist < -player2.size.y/2)
+        moveDown(&player2);
+    }
   }
 }
 
@@ -333,6 +343,12 @@ void update_menu(){
   else if(input == 'd')
   {
     gameState = menuState;
+
+    if(menuState == VsAI)
+      playingVsAI = 1;
+      else
+      playingVsAI = 0;
+
   }
 
 
@@ -359,7 +375,8 @@ void update_chooseDiff(){
 }
 
 void update_highscore(){
-
+  if(input == 'a')
+    gameState = Menu;
 }
 
 //-----------------------------------------------
@@ -496,7 +513,6 @@ void setBallAngle(double angle){
 
 //Calculates the angle of the ball when colliding with a paddle
 void ballPaddleAngle(struct Rectangle player){
-  setBallAngle(PI - ballAngle);
 
   double dist = rectCenter(player).y - rectCenter(ball).y;
   double offset = (PI/3)*(dist/player.size.y); //Max offset * percentage distance from middle
@@ -505,7 +521,7 @@ void ballPaddleAngle(struct Rectangle player){
   if(player.pos.x < screenSize.x/2)
     offset *= -1;
 
-  setBallAngle(ballAngle + offset);
+  setBallAngle(PI - ballAngle + offset);
 
 
   //Contstrains angle to not be to vertical
@@ -518,6 +534,11 @@ void ballPaddleAngle(struct Rectangle player){
   else if(ballAngle < 5*PI/3 && ballAngle > 3*PI/2)
       ballAngle = 5*PI/3;
 
+}
+
+int ballMovingLeft()
+{
+  return (ballAngle > PI/2) && (ballAngle < 3*PI/2);
 }
 
 //-----------------------------------------------
@@ -613,15 +634,15 @@ void printGame()
 
 void printGameStatus()
 {
-   /*printf("Player 1: ");
+    printf("Player 1: ");
    printRect(player1);
 
    printf("\nPlayer 2: ");
-   printRect(player2);*/
+   printRect(player2);
 
    printf("\nBall: ");
    printRect(ball);
-   printf("\nBallangle: %.3f\n", ballAngle);
+   printf(" Ballangle: %.3f\n", ballAngle);
 
    printf("AI: %d\n", ai_diff);
    printf("Player1 %d - %d player2\n", score_p1, score_p2);
