@@ -97,6 +97,8 @@ enum GameState{VsHuman, VsAI, HighScore, Menu, ChooseDiff}gameState, menuState;
 
 int score_p1, score_p2;
 
+int playingVsAI = 0;
+
 int ai_diff = 0, ai_tick = 0;
 
 char input;
@@ -126,11 +128,12 @@ void resetGame(){
 //with the angle towards the loosing player (Player 1 if tie)
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  if (score_p1 > score_p2)
-    ballAngle = 0;
-  else
+  if (score_p1 <= score_p2 || playingVsAI)
     ballAngle = PI;
+  else
+    ballAngle = 0;
 }
+
 
 //Resets the players to the middle of the screen
 void resetPlayers(){
@@ -158,6 +161,7 @@ void update(){
       update_ball();
       update_player1();
       update_player2();
+
 
 
       break;
@@ -274,11 +278,13 @@ void update_ball(){
 
 void player_score(int* score)
 {
+    (*score)++;
+
     resetBall();
     resetPlayers();
 
-    (*score)++;
 
+    //Someome wins
     if((*score) > 3)
       resetGame();
 }
@@ -337,6 +343,11 @@ void update_menu(){
   else if(input == 'd')
   {
     gameState = menuState;
+
+    if(menuState == VsAI)
+      playingVsAI = 1;
+      else
+      playingVsAI = 0;
 
   }
 

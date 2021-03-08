@@ -142,10 +142,10 @@ void resetGame(){
 //with the angle towards the loosing player (Player 1 if tie)
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
-  if (score_p1 > score_p2)
-    ballAngle = 0;
-  else
+  if (score_p1 <= score_p2 || playingVsAI)
     ballAngle = PI;
+  else
+    ballAngle = 0;
 }
 
 //Resets the players to the middle of the screen
