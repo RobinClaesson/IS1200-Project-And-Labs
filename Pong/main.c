@@ -223,7 +223,7 @@ void update(){
       case VsAI:
       if (!swt1_on()) //Pause
       {
-        if (swt4_on())
+        if (swt4_on()) //For debugging
         {
           ball.pos.x = 124;
           ball.pos.y = 0;
