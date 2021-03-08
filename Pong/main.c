@@ -131,11 +131,11 @@ is running at 80 MHz. Changed 2017, as recommended by Axel.
 }
 
 void resetGame(){
-  resetPlayers();
-  resetBall();
-
   score_p1 = 0;
   score_p2 = 0;
+
+  resetPlayers();
+  resetBall();
 }
 
 //Resets the ball to the center of the screen
@@ -143,7 +143,7 @@ void resetGame(){
 void resetBall(){
   ball = createRect(screenSize.x/2 - 1, screenSize.y/2 - 1, 2, 2);
   if (score_p1 > score_p2)
-    ballAngle = -PI;
+    ballAngle = 0;
   else
     ballAngle = PI;
 }
@@ -223,7 +223,16 @@ void update(){
       case VsAI:
       if (!swt1_on()) //Pause
       {
-        update_ball();
+        if (swt4_on())
+        {
+          ball.pos.x = 124;
+          ball.pos.y = 0;
+
+          ballAngle = 0;
+        } else {
+          update_ball();
+        }
+
         update_player1();
         update_AI();
 
@@ -345,12 +354,11 @@ void update_ball(){
 //Gets called when a player scores with a pointer to that players current score
 void player_score(int* score)
 {
+    (*score)++;
+
     resetBall();
     resetPlayers();
 
-    (*score)++;
-
-    //Show score on leds
     display_score(score_p1, score_p2);
 
     //Someome wins
@@ -559,8 +567,9 @@ void update_displayWinner(){
 
     if (playingVsAI){
       //Checking if we should add new highcscoe
-      if (score_p1 > score_p2)
+      if (score_p1 > score_p2  && score_p1 > get_score(ai_diff, 8))
         gameState = InputName; //New highscore
+
       else {
         gameState = Menu;
       }
