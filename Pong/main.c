@@ -228,14 +228,14 @@ void update(){
       {
         if (swt4_on())
         {
-          ball.pos.x = 127;
+          ball.pos.x = 124;
           ball.pos.y = 0;
 
           ballAngle = 0;
         } else {
           update_ball();
         }
-        
+
         update_player1();
         update_AI();
 
